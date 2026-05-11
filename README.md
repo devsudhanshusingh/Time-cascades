@@ -1,16 +1,48 @@
-# React + Vite
+# Time Cascades
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Time Cascades is a small React application built with Vite. It includes a custom `Clock` component and a New Year countdown screen.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React 19 app scaffolded with Vite
+- Clock display with current time and date
+- Countdown to 2027 with a progress bar
+- Responsive card-based UI
 
-## React Compiler
+## Project structure
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- `src/App.jsx` – main application component
+- `src/components/clock/Clock.jsx` – clock display component
+- `src/components/new_year/NewYear.jsx` – countdown component
+- `src/main.jsx` – React entry point
+- `src/index.css` / `src/App.css` – global and app styling
 
-## Expanding the ESLint configuration
+## Setup
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the development server:
+
+```bash
+npm run dev
+```
+
+Build for production:
+
+```bash
+npm run build
+```
+
+Preview the production build locally:
+
+```bash
+npm run preview
+```
+
+## Notes
+
+This project is configured as a private React app using Vite and ESLint. You can extend it with more UI components, routes, or animations.

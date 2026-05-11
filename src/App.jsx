@@ -1,13 +1,16 @@
-import React  from "react"
-import Clock from "./components/clock/Clock"
+import React from "react";
+import Clock from "./components/clock/Clock";
+import NewYear from "./components/new_year/NewYear";
+import "./App.css";
 
 function App() {
   return (
-  <>
-  <Clock/>
-  <div>hello namasty aapka sawagat hai new project me</div>
-  </>
-  )
+    <>
+   
+      <Clock />
+      <NewYear />
+   </>
+  );
 }
 
-export default App
+export default App;
