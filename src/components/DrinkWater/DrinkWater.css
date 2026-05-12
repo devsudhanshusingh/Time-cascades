@@ -1,0 +1,178 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap");
+
+:root {
+  --border-color: #144fc6;
+  --fill-color: #6ab3f8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #3494e4;
+  font-family: "Montserrat", sans-serif;
+}
+
+.drinkwater-container {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+h1 {
+  font-size: 3rem;
+}
+
+h3 {
+  font-weight: 400;
+  margin-top: 10px;
+}
+
+.glass-input {
+  margin-top: 25px;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.glass-input input {
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+}
+
+.glass-input input:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+}
+
+.glass-input button {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  background: white;
+  color: #144fc6;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.cup {
+  background-color: white;
+  border: 4px solid var(--border-color);
+  color: var(--border-color);
+  border-radius: 0 0 40px 40px;
+  height: 330px;
+  width: 170px;
+  margin: 30px 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.remained {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  transition: 0.3s ease;
+  text-align: center;
+}
+
+.remained span {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.remained small {
+  font-size: 1rem;
+}
+
+.percentage {
+  background-color: var(--fill-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+  transition: 0.3s ease;
+}
+
+.text {
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+.cups {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 320px;
+}
+
+.cup-small {
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.9
+  );
+  border: 4px solid var(--border-color);
+  color: var(--border-color);
+  border-radius: 0 0 15px 15px;
+  height: 110px;
+  width: 70px;
+  margin: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s ease;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.cup-small.full {
+  background-color: var(--fill-color);
+  color: white;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.2rem;
+  }
+
+  .cup {
+    width: 140px;
+    height: 300px;
+  }
+
+  .cups {
+    width: 100%;
+  }
+
+  .cup-small {
+    width: 60px;
+    height: 100px;
+  }
+
+  .glass-input {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .glass-input input,
+  .glass-input button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,203 @@
+/* Pomodoro.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #ececec;
+  font-family: "Poppins", sans-serif;
+}
+
+.pomodoro-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+.pomodoro-card {
+  width: 100%;
+  max-width: 950px;
+  background: #f4f4f4;
+  border-radius: 25px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: left;
+  color: #1f1f1f;
+}
+
+.timer {
+  margin-top: 60px;
+  font-size: 7rem;
+  font-weight: 700;
+  color: #87b6cc;
+  font-variant-numeric: tabular-nums;
+}
+
+.status {
+  margin-top: 20px;
+  font-size: 2rem;
+  color: #6b7280;
+}
+
+.time-editor {
+  margin-top: 35px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.time-editor input {
+  width: 110px;
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  font-size: 1.2rem;
+  text-align: center;
+  outline: none;
+}
+
+.buttons {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.buttons button {
+  border: none;
+  padding: 18px 38px;
+  border-radius: 15px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.custom-mode input:disabled {
+  background: #e5e7eb;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.start {
+  background: #87b6cc;
+  color: white;
+}
+
+.pause {
+  background: #dddddd;
+  color: #555;
+}
+
+.reset {
+  background: #c85d6a;
+  color: white;
+}
+
+.buttons button:hover {
+  transform: translateY(-3px);
+}
+
+.modes {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.modes button {
+  padding: 14px 30px;
+  border-radius: 40px;
+  border: 2px solid #d4d4d4;
+  background: transparent;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.modes button:hover {
+  background: #87b6cc;
+  color: white;
+  border-color: #87b6cc;
+}
+
+.custom-mode {
+  margin-top: 35px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.custom-mode input {
+  padding: 15px 18px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  font-size: 1rem;
+  outline: none;
+}
+
+.custom-mode button {
+  padding: 15px 24px;
+  border: none;
+  border-radius: 12px;
+  background: #87b6cc;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.sessions {
+  margin-top: 45px;
+  font-size: 2rem;
+  color: #6b7280;
+}
+
+.sessions span {
+  color: #87b6cc;
+  font-weight: 700;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .timer {
+    font-size: 3.8rem;
+  }
+
+  .title {
+    font-size: 1.8rem;
+  }
+
+  .status {
+    font-size: 1.2rem;
+  }
+
+  .buttons button,
+  .modes button,
+  .custom-mode button {
+    width: 100%;
+  }
+
+  .time-editor {
+    flex-direction: column;
+  }
+
+  .time-editor input {
+    width: 100%;
+  }
+
+  .sessions {
+    font-size: 1.3rem;
+  }
+}
