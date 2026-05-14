@@ -9,17 +9,11 @@
   box-sizing: border-box;
 }
 
-body {
-  background-color: #3494e4;
-  font-family: "Montserrat", sans-serif;
-}
-
 .drinkwater-container {
-  color: white;
+  padding: 40px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 40px 20px;
 }
 
 h1 {

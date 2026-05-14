@@ -12,16 +12,12 @@ body {
 }
 
 .countdown-container {
-  min-height: 30vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 40px;
+  width: 100%;
 }
 
 .countdown-card {
   width: 100%;
-  max-width: 1500px;
+  max-width: 100%;
   background: #f4f4f4;
   border-radius: 25px;
   padding: 60px 40px;

@@ -1,20 +1,61 @@
-﻿.app {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-  padding: 40px;
-  background: #ececec;
+﻿/* App.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.section {
+body {
+  background: #ececec;
+  font-family: "Poppins", sans-serif;
+}
+
+.dashboard {
   width: 100%;
-  max-width: 1500px;
-  max-height: 100px;
-  background: #f4f4f4;
-  border-radius: 25px;
-  padding: 60px 40px;
-  text-align: center;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  min-height: 100vh;
+}
+
+.main-content {
+  padding: 30px;
+}
+
+/* GRID */
+
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-top: 30px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+  .bottom-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .main-content {
+    padding: 20px;
+  }
+}
+
+
+/* App.css */
+
+.goal-todo-grid {
+  margin-top: 30px;
+
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 30px;
+}
+
+@media (max-width: 900px) {
+  .goal-todo-grid {
+    grid-template-columns: 1fr;
+  }
 }

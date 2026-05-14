@@ -11,15 +11,9 @@ body {
   font-family: "Poppins", sans-serif;
 }
 
-.pomodoro-container {
-  display: flex;
-  justify-content: center;
-  padding: 40px;
-}
-
 .pomodoro-card {
   width: 100%;
-  max-width: 950px;
+ height: 100%;
   background: #f4f4f4;
   border-radius: 25px;
   padding: 40px;
