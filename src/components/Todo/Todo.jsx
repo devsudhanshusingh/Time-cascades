@@ -1,42 +1,80 @@
 // Todo.jsx
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
+import axios from "axios";
+
 import "./Todo.css";
 
 const Todo = () => {
-  const [task, setTask] = useState("");
+  const [text, setText] = useState("");
+
+  const [type, setType] = useState("");
+
+  const [completionDate, setCompletionDate] = useState("");
+
   const [tasks, setTasks] = useState([]);
 
-  const addTask = () => {
-    if (!task.trim()) return;
+  /* FETCH TODOS */
 
-    setTasks([
-      ...tasks,
-      {
-        id: Date.now(),
-        text: task,
-        completed: false,
-      },
-    ]);
+  const fetchTodos = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/todos");
 
-    setTask("");
+      setTasks(res.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const toggleTask = (id) => {
-    setTasks(
-      tasks.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              completed: !item.completed,
-            }
-          : item,
-      ),
-    );
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
+  /* ADD TASK */
+
+  const addTask = async () => {
+    if (!text.trim() || !type || !completionDate) return;
+
+    try {
+      const res = await axios.post("http://localhost:5000/api/todos", {
+        type,
+        text,
+        completionDate,
+      });
+
+      setTasks([res.data, ...tasks]);
+
+      setText("");
+      setType("");
+      setCompletionDate("");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const clearCompleted = () => {
-    setTasks(tasks.filter((item) => !item.completed));
+  /* TOGGLE TASK */
+
+  const toggleTask = async (id) => {
+    try {
+      const res = await axios.patch(`http://localhost:5000/api/todos/${id}`);
+
+      setTasks(tasks.map((item) => (item._id === id ? res.data : item)));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  /* DELETE TASK */
+
+  const deleteTask = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/todos/${id}`);
+
+      setTasks(tasks.filter((item) => item._id !== id));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -49,17 +87,43 @@ const Todo = () => {
         <h1>Todo List</h1>
       </div>
 
-      {/* INPUT */}
+      {/* INPUTS */}
 
-      <div className="todo-input-box">
+      <div className="todo-form">
+        {/* TASK */}
+
         <input
           type="text"
-          placeholder="Add a new task..."
-          value={task}
-          onChange={(e) => setTask(e.target.value)}
+          placeholder="Enter task..."
+          value={text}
+          onChange={(e) => setText(e.target.value)}
         />
 
-        <button onClick={addTask}>Add</button>
+        {/* TYPE */}
+
+        <select value={type} onChange={(e) => setType(e.target.value)}>
+          <option value="">Select Type</option>
+
+          <option value="Daily">Daily</option>
+
+          <option value="Weekly">Weekly</option>
+
+          <option value="Monthly">Monthly</option>
+
+          <option value="Yearly">Yearly</option>
+        </select>
+
+        {/* DATE */}
+
+        <input
+          type="date"
+          value={completionDate}
+          onChange={(e) => setCompletionDate(e.target.value)}
+        />
+
+        {/* BUTTON */}
+
+        <button onClick={addTask}>Add Task</button>
       </div>
 
       {/* TASKS */}
@@ -67,16 +131,33 @@ const Todo = () => {
       <div className="todo-tasks">
         {tasks.map((item) => (
           <div
-            key={item.id}
+            key={item._id}
             className={`todo-task ${item.completed ? "completed" : ""}`}
           >
-            <input
-              type="checkbox"
-              checked={item.completed}
-              onChange={() => toggleTask(item.id)}
-            />
+            {/* LEFT */}
 
-            <p>{item.text}</p>
+            <div className="task-left">
+              <input
+                type="checkbox"
+                checked={item.completed}
+                onChange={() => toggleTask(item._id)}
+              />
+
+              <div>
+                <h3>{item.text}</h3>
+
+                <p>
+                  {item.type} •{" "}
+                  {new Date(item.completionDate).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+
+            {/* DELETE */}
+
+            <button className="delete-btn" onClick={() => deleteTask(item._id)}>
+              ✕
+            </button>
           </div>
         ))}
       </div>
@@ -85,8 +166,6 @@ const Todo = () => {
 
       <div className="todo-footer">
         <p>{tasks.filter((item) => !item.completed).length} tasks remaining</p>
-
-        <button onClick={clearCompleted}>Clear Completed</button>
       </div>
     </div>
   );

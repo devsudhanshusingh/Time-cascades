@@ -17,68 +17,76 @@ body {
 
 .countdown-card {
   width: 100%;
-  max-width: 100%;
   background: #f4f4f4;
-  border-radius: 25px;
-  padding: 60px 40px;
+  border-radius: 22px;
+  padding: 35px 25px; /* reduced */
   text-align: center;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
 }
 
-.title {
-  font-size: 3rem;
+.countdown-title {
+  font-size: 2.5rem;
   font-weight: 700;
   color: #1f1f1f;
+  text-align: center;
 }
 
-.title span {
+.countdown-title span {
   color: #87b6cc;
 }
 
 .timer-boxes {
-  margin-top: 60px;
+  margin-top: 35px; /* reduced */
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
-  flex-wrap: wrap;
+  gap: 12px;
+  flex-wrap: nowrap; /* IMPORTANT */
+  overflow-x: auto; /* mobile horizontal scroll */
+  padding-bottom: 5px;
+}
+
+.timer-boxes::-webkit-scrollbar {
+  display: none;
 }
 
 .box {
-  width: 170px;
-  height: 150px;
+  min-width: 115px;
+  height: 110px;
   background: #f1f1f1;
   border: 1px solid #d8d8d8;
-  border-radius: 18px;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .box h2 {
-  font-size: 3rem;
+  font-size: 2.2rem;
   color: #87b6cc;
   font-weight: 700;
 }
 
 .box p {
-  margin-top: 10px;
-  font-size: 1.5rem;
+  margin-top: 6px;
+  font-size: 0.95rem;
   color: #6b7280;
 }
 
 .timer-boxes span {
-  font-size: 3rem;
+  font-size: 2rem;
   color: #6b7280;
   font-weight: bold;
+  flex-shrink: 0;
 }
 
 .progress-bar {
   width: 100%;
-  height: 18px;
+  height: 14px;
   background: #d9dde2;
   border-radius: 20px;
-  margin-top: 70px;
+  margin-top: 40px; /* reduced */
   overflow: hidden;
 }
 
@@ -90,36 +98,47 @@ body {
 }
 
 .progress-text {
-  margin-top: 20px;
-  font-size: 2rem;
+  margin-top: 14px;
+  font-size: 1.2rem;
   color: #6b7280;
 }
 
-/* Responsive */
+/* Mobile */
 
-@media (max-width: 900px) {
-  .title {
-    font-size: 2.5rem;
+@media (max-width: 768px) {
+  .countdown-card {
+    padding: 25px 15px;
+  }
+
+  .countdown-title {
+    width: 100%;
+    text-align: center;
+    font-size: 1.8rem;
+  }
+
+  .timer-boxes {
+    justify-content: flex-start;
+    gap: 10px;
   }
 
   .box {
-    width: 120px;
-    height: 130px;
+    min-width: 90px;
+    height: 90px;
   }
 
   .box h2 {
-    font-size: 2.5rem;
+    font-size: 1.6rem;
   }
 
   .box p {
-    font-size: 1rem;
+    font-size: 0.75rem;
   }
 
   .timer-boxes span {
-    font-size: 2rem;
+    font-size: 1.3rem;
   }
 
   .progress-text {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 }

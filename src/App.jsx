@@ -15,9 +15,8 @@ function App() {
     <div className="dashboard">
       <TopBar />
 
+      <Clock />
       <div className="main-content">
-        <Clock />
-
         <NewYear />
 
         <div className="bottom-grid">

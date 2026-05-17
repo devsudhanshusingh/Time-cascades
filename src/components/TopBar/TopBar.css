@@ -1,29 +1,15 @@
-/* TopBar.css */
 
 .topbar {
   width: 100%;
-
-  min-height: 90px;
-
-  background: rgba(255, 255, 255, 0.7);
-
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 24px;
+  background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-
-  padding: 20px 50px;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-
-  
-
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-
-  margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
 /* LEFT */
@@ -31,109 +17,138 @@
 .topbar-left {
   display: flex;
   align-items: center;
-  gap: 18px;
 }
 
-.topbar-logo {
-  width: 55px;
-  height: 55px;
+.profile-section {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
 
+.profile-img {
+  width: 62px;
+  height: 62px;
   border-radius: 18px;
-
-  background: linear-gradient(
-    135deg,
-    #87b6cc,
-    #b7d7e5
-  );
-
-  box-shadow: 0 0 20px rgba(135, 182, 204, 0.5);
+  object-fit: cover;
+  background-color: #87b6cc;
+  border: 2px solid rgba(255, 255, 255, 0.08);
 }
 
-.topbar-left h2 {
-  font-size: 1.5rem;
-  color: #1f2937;
+.profile-section h2 {
+  font-size: 1.15rem;
+  color: #87b6cc;
+  margin: 0;
+  font-weight: 700;
 }
 
-.topbar-left p {
-  margin-top: 5px;
-  color: #6b7280;
+.profile-section p {
+  margin-top: 4px;
+  color: #94a3b8;
+  font-size: 0.82rem;
+  letter-spacing: 0.3px;
 }
 
 /* CENTER */
 
 .topbar-center {
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 12px;
-
-  background: #edf8ff;
-
-  padding: 14px 24px;
-
-  border-radius: 40px;
-
-  color: #4b5563;
-
-  font-weight: 600;
 }
 
-.status-dot {
-  width: 12px;
-  height: 12px;
-
-  background: #22c55e;
-
-  border-radius: 50%;
-
-  animation: pulse 1.5s infinite;
+.quote-card {
+  width: 320px;
+  height: 95px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  animation: fadeSlide 0.7s ease;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+  transition: all 0.35s ease;
+  cursor: pointer;
 }
 
-@keyframes pulse {
-  0% {
-    transform: scale(1);
+.quote-card:hover {
+  transform: translateY(-4px) scale(1.01);
+}
+
+.quote-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* DARK OVERLAY */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.92),
+    rgba(0, 0, 0, 0.15)
+  );
+
+  z-index: 1;
+}
+
+/* LOGO */
+
+.card-logo {
+  position: absolute;
+
+  top: 5px;
+  left: 10px;
+
+  max-width: 170px;
+  max-height: 38px;
+
+  width: auto;
+  height: auto;
+
+  object-fit: contain;
+
+  z-index: 2;
+
+  opacity: 0.9;
+}
+
+/* TEXT */
+
+.quote-card p {
+  position: absolute;
+
+  bottom: 10px;
+  left: 14px;
+  right: 14px;
+
+  color: #f8fafc;
+
+  font-size: 0.8rem;
+  line-height: 1.4;
+
+  z-index: 2;
+
+  margin: 0;
+
+  font-weight: 500;
+
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+}
+
+/* ANIMATION */
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+
+  to {
     opacity: 1;
+    transform: translateY(0) scale(1);
   }
-
-  50% {
-    transform: scale(1.4);
-    opacity: 0.5;
-  }
-
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-/* RIGHT */
-
-.topbar-right {
-  display: flex;
-  gap: 15px;
-}
-
-.mini-card {
-  width: 100px;
-
-  background: white;
-
-  border-radius: 18px;
-
-  padding: 12px;
-
-  text-align: center;
-
-  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
-}
-
-.mini-card h3 {
-  font-size: 1.4rem;
-  color: #87b6cc;
-}
-
-.mini-card p {
-  margin-top: 4px;
-  color: #6b7280;
 }
 
 /* RESPONSIVE */
@@ -141,21 +156,45 @@
 @media (max-width: 900px) {
   .topbar {
     flex-direction: column;
+
     align-items: flex-start;
 
-    padding: 20px;
+    gap: 16px;
   }
 
   .topbar-center {
     width: 100%;
-    justify-content: center;
   }
 
-  .topbar-right {
+  .quote-card {
     width: 100%;
+    max-width: 380px;
+  }
+}
+
+@media (max-width: 500px) {
+  .topbar {
+    padding: 14px;
   }
 
-  .mini-card {
-    flex: 1;
+  .profile-img {
+    width: 55px;
+    height: 55px;
+  }
+
+  .profile-section h2 {
+    font-size: 1rem;
+  }
+
+  .quote-card {
+    height: 90px;
+  }
+
+  .quote-card p {
+    font-size: 0.75rem;
+  }
+
+  .card-logo {
+    width: 20px;
   }
 }

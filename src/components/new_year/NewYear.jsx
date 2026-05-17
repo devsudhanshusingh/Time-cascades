@@ -39,7 +39,7 @@ const NewYear = () => {
   return (
     <div className="countdown-container">
       <div className="countdown-card">
-        <h1 className="title">
+        <h1 className="countdown-title">
           Countdown to <span>2027</span>
         </h1>
 
@@ -82,7 +82,9 @@ const NewYear = () => {
           <div className="progress" style={{ width: `${progress}%` }}></div>
         </div>
 
-        <p className="progress-text">{progress.toFixed(2)}% of 2026 completed</p>
+        <p className="progress-text">
+          {progress.toFixed(2)}% of 2026 completed
+        </p>
       </div>
     </div>
   );
