@@ -10,6 +10,12 @@ import stl from "../../assets/Stranger-Things-Logo.webp";
 import your from "../../assets/your-logo.png";
 import Thor from "../../assets/Thor_Logo.webp";
 import wwylogo from "../../assets/wwy-logo.png";
+import sparrow from "../../assets/giphy.webp";
+import bat from "../../assets/bat.png";
+import ham from "../../assets/ham.jpg";
+import hulk from "../../assets/hulk.png";
+import spyder from "../../assets/spy.png";
+import iron from "../../assets/iron.png"; 
 
 
 
@@ -69,6 +75,14 @@ const TopBar = () => {
         </div>
       </div>
 
+      <div className="top-icons">
+        <img className="top-img" src={sparrow} alt="Sparrow" />
+        <img className="top-img" src={bat} alt="Bat" />
+        <img className="top-img" src={ham} alt="Ham" />
+        <img className="top-img" src={iron} alt="Iron" />
+        <img className="top-img" src={hulk} alt="Hulk" />
+        <img className="top-img" src={spyder} alt="Spider" />
+      </div>
       {/* ROTATING CARD */}
 
       <div className="topbar-center">
