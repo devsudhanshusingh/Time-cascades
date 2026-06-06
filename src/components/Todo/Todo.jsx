@@ -1,25 +1,81 @@
 // Todo.jsx
 
 import React, { useEffect, useState } from "react";
-
 import axios from "axios";
-
 import "./Todo.css";
 
 const Todo = () => {
   const [text, setText] = useState("");
-
-  const [type, setType] = useState("");
-
+  const [type, setType] = useState("Daily");
   const [completionDate, setCompletionDate] = useState("");
-
   const [tasks, setTasks] = useState([]);
+  const [showTasks, setShowTasks] = useState(false);
 
-  /* FETCH TODOS */
+  const getDateInputType = (mode) => {
+    switch (mode) {
+      case "Weekly":
+        return "week";
+
+      case "Monthly":
+        return "month";
+
+      case "Yearly":
+        return "number";
+
+      default:
+        return "date";
+    }
+  };
+
+  const getYearOptions = () => {
+    const currentYear = new Date().getFullYear();
+
+    return Array.from({ length: 20 }, (_, index) => currentYear - 5 + index);
+  };
+
+  const formatCompletionDate = (item) => {
+    if (!item?.completionDate) return "";
+
+    const value = item.completionDate;
+
+    switch (item.type) {
+      case "Weekly": {
+        const [year, week] = value.split("-W");
+
+        return week ? `Week ${week}, ${year}` : value;
+      }
+
+      case "Monthly": {
+        const [year, month] = value.split("-");
+
+        if (year && month) {
+          const date = new Date(`${year}-${month}-01`);
+
+          return date.toLocaleString("default", {
+            month: "long",
+            year: "numeric",
+          });
+        }
+
+        return value;
+      }
+
+      case "Yearly":
+        return value;
+
+      default: {
+        const date = new Date(value);
+
+        return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString();
+      }
+    }
+  };
 
   const fetchTodos = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/todos");
+      const res = await axios.get(
+        "https://my-server-1-nvrv.onrender.com/api/todos",
+      );
 
       setTasks(res.data);
     } catch (error) {
@@ -31,33 +87,34 @@ const Todo = () => {
     fetchTodos();
   }, []);
 
-  /* ADD TASK */
-
   const addTask = async () => {
-    if (!text.trim() || !type || !completionDate) return;
+    if (!text.trim() || !completionDate) return;
 
     try {
-      const res = await axios.post("http://localhost:5000/api/todos", {
-        type,
-        text,
-        completionDate,
-      });
+      const res = await axios.post(
+        "https://my-server-1-nvrv.onrender.com/api/todos",
+        {
+          type,
+          text,
+          completionDate,
+        },
+      );
 
       setTasks([res.data, ...tasks]);
 
       setText("");
-      setType("");
       setCompletionDate("");
+      setType("Daily");
     } catch (error) {
       console.log(error);
     }
   };
 
-  /* TOGGLE TASK */
-
   const toggleTask = async (id) => {
     try {
-      const res = await axios.patch(`http://localhost:5000/api/todos/${id}`);
+      const res = await axios.patch(
+        `https://my-server-1-nvrv.onrender.com/api/todos/${id}`,
+      );
 
       setTasks(tasks.map((item) => (item._id === id ? res.data : item)));
     } catch (error) {
@@ -65,11 +122,11 @@ const Todo = () => {
     }
   };
 
-  /* DELETE TASK */
-
   const deleteTask = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/todos/${id}`);
+      await axios.delete(
+        `https://my-server-1-nvrv.onrender.com/api/todos/${id}`,
+      );
 
       setTasks(tasks.filter((item) => item._id !== id));
     } catch (error) {
@@ -77,95 +134,146 @@ const Todo = () => {
     }
   };
 
+  const filteredTasks = tasks.filter((item) => item.type === type);
+
   return (
-    <div className="todo-card">
-      {/* HEADER */}
+    <div className={`todo-card ${showTasks ? "flipped" : ""}`}>
+      <div className="todo-card-inner">
+        {/* FRONT */}
 
-      <div className="todo-header">
-        <span>☑️</span>
+        <div className="todo-card-face todo-card-front">
+          <div className="todo-header">
+            <span>☑️</span>
 
-        <h1>Todo List</h1>
-      </div>
+            <h1>Todo List</h1>
+          </div>
 
-      {/* INPUTS */}
+          <div className="todo-form">
+            <div className="mode-buttons">
+              {["Daily", "Weekly", "Monthly", "Yearly"].map((mode) => (
+                <button
+                  key={mode}
+                  className={`mode-button ${type === mode ? "active" : ""}`}
+                  onClick={() => {
+                    setType(mode);
 
-      <div className="todo-form">
-        {/* TASK */}
-
-        <input
-          type="text"
-          placeholder="Enter task..."
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-        />
-
-        {/* TYPE */}
-
-        <select value={type} onChange={(e) => setType(e.target.value)}>
-          <option value="">Select Type</option>
-
-          <option value="Daily">Daily</option>
-
-          <option value="Weekly">Weekly</option>
-
-          <option value="Monthly">Monthly</option>
-
-          <option value="Yearly">Yearly</option>
-        </select>
-
-        {/* DATE */}
-
-        <input
-          type="date"
-          value={completionDate}
-          onChange={(e) => setCompletionDate(e.target.value)}
-        />
-
-        {/* BUTTON */}
-
-        <button onClick={addTask}>Add Task</button>
-      </div>
-
-      {/* TASKS */}
-
-      <div className="todo-tasks">
-        {tasks.map((item) => (
-          <div
-            key={item._id}
-            className={`todo-task ${item.completed ? "completed" : ""}`}
-          >
-            {/* LEFT */}
-
-            <div className="task-left">
-              <input
-                type="checkbox"
-                checked={item.completed}
-                onChange={() => toggleTask(item._id)}
-              />
-
-              <div>
-                <h3>{item.text}</h3>
-
-                <p>
-                  {item.type} •{" "}
-                  {new Date(item.completionDate).toLocaleDateString()}
-                </p>
-              </div>
+                    setCompletionDate("");
+                  }}
+                >
+                  {mode}
+                </button>
+              ))}
             </div>
 
-            {/* DELETE */}
+            <div className="input-box">
+              <span className="input-icon">📝</span>
 
-            <button className="delete-btn" onClick={() => deleteTask(item._id)}>
-              ✕
+              <input
+                type="text"
+                placeholder="Enter task..."
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+              />
+            </div>
+
+            <div className="input-box">
+              <span className="input-icon">📅</span>
+
+              {type === "Yearly" ? (
+                <select
+                  value={completionDate}
+                  onChange={(e) => setCompletionDate(e.target.value)}
+                >
+                  <option value="">Select year</option>
+
+                  {getYearOptions().map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  className="date-input"
+                  type={getDateInputType(type)}
+                  value={completionDate}
+                  onChange={(e) => setCompletionDate(e.target.value)}
+                />
+              )}
+            </div>
+
+            <div className="form-actions">
+              <button onClick={addTask}>Add Task</button>
+
+              <button
+                className="view-tasks-btn"
+                onClick={() => setShowTasks(true)}
+              >
+                View Tasks
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* BACK */}
+
+        <div className="todo-card-face todo-card-back">
+          <div className="todo-back-header">
+            <span>Task List</span>
+
+            <button
+              className="view-tasks-btn back"
+              onClick={() => setShowTasks(false)}
+            >
+              Back
             </button>
           </div>
-        ))}
-      </div>
 
-      {/* FOOTER */}
+          <div className="todo-tasks-panel">
+            {filteredTasks.length > 0 ? (
+              filteredTasks.map((item) => (
+                <div
+                  key={item._id}
+                  className={`todo-task ${item.completed ? "completed" : ""}`}
+                >
+                  <div className="task-left">
+                    <input
+                      type="checkbox"
+                      checked={item.completed}
+                      onChange={() => toggleTask(item._id)}
+                    />
 
-      <div className="todo-footer">
-        <p>{tasks.filter((item) => !item.completed).length} tasks remaining</p>
+                    <div>
+                      <h3>{item.text}</h3>
+
+                      <p>
+                        {item.type}
+                        {" • "}
+                        {formatCompletionDate(item)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    className="delete-btn"
+                    onClick={() => deleteTask(item._id)}
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div className="empty-state">No tasks available</div>
+            )}
+          </div>
+
+          <div className="todo-footer">
+            <p>
+              {filteredTasks.filter((item) => !item.completed).length} tasks
+              remaining
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

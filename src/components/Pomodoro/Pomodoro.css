@@ -11,77 +11,92 @@ body {
   font-family: "Poppins", sans-serif;
 }
 
+.pomodoro-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .pomodoro-card {
   width: 100%;
- height: 100%;
+  max-width: 600px; /* increased size slightly */
   background: #f4f4f4;
-  border-radius: 25px;
-  padding: 40px;
+  border-radius: 22px;
+  padding: 35px;
   text-align: center;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
 }
 
 .title {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
-  text-align: left;
   color: #1f1f1f;
 }
 
-.timer {
-  margin-top: 60px;
-  font-size: 7rem;
-  font-weight: 700;
-  color: #87b6cc;
-  font-variant-numeric: tabular-nums;
-}
-
 .status {
-  margin-top: 20px;
-  font-size: 2rem;
+  margin-top: 15px;
+  font-size: 1.4rem;
   color: #6b7280;
 }
 
-.time-editor {
-  margin-top: 35px;
+/* Timer + Input */
+
+.timer-editor {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 35px 0;
+}
+
+.timer-editor select {
+  border: none;
+  background: transparent;
+  appearance: none;
+
+  width: 95px;
+
+  font-size: 4.2rem;
+  font-weight: 700;
+  color: #87b6cc;
+
+  text-align: center;
+  outline: none;
+  cursor: pointer;
+}
+
+.timer-editor span {
+  font-size: 4rem;
+  font-weight: 700;
+  color: #87b6cc;
+}
+
+.timer-editor select:disabled {
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* Buttons */
+
+.buttons {
+  margin-top: 30px;
   display: flex;
   justify-content: center;
   gap: 15px;
   flex-wrap: wrap;
 }
 
-.time-editor input {
-  width: 110px;
-  padding: 15px;
-  border-radius: 12px;
-  border: 1px solid #d1d5db;
-  font-size: 1.2rem;
-  text-align: center;
-  outline: none;
-}
-
-.buttons {
-  margin-top: 40px;
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
 .buttons button {
   border: none;
-  padding: 18px 38px;
-  border-radius: 15px;
-  font-size: 1.2rem;
+  padding: 14px 32px;
+  border-radius: 14px;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: 0.3s;
 }
-.custom-mode input:disabled {
-  background: #e5e7eb;
-  cursor: not-allowed;
-  opacity: 0.7;
-}
+
 .start {
   background: #87b6cc;
   color: white;
@@ -101,20 +116,22 @@ body {
   transform: translateY(-3px);
 }
 
+/* Modes */
+
 .modes {
-  margin-top: 40px;
+  margin-top: 30px;
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 15px;
   flex-wrap: wrap;
 }
 
 .modes button {
-  padding: 14px 30px;
-  border-radius: 40px;
+  padding: 12px 25px;
+  border-radius: 30px;
   border: 2px solid #d4d4d4;
-  background: transparent;
-  font-size: 1.1rem;
+  background: white;
+  font-size: 1rem;
   cursor: pointer;
   transition: 0.3s;
 }
@@ -125,35 +142,53 @@ body {
   border-color: #87b6cc;
 }
 
+.modes button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Custom mode */
+
 .custom-mode {
-  margin-top: 35px;
+  margin-top: 30px;
   display: flex;
   justify-content: center;
-  gap: 15px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .custom-mode input {
-  padding: 15px 18px;
-  border-radius: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
   border: 1px solid #d1d5db;
-  font-size: 1rem;
   outline: none;
+  font-size: 1rem;
+}
+
+.custom-mode input:disabled {
+  background: #e5e7eb;
 }
 
 .custom-mode button {
-  padding: 15px 24px;
+  padding: 12px 22px;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   background: #87b6cc;
   color: white;
   cursor: pointer;
   font-size: 1rem;
 }
 
+.custom-mode button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Sessions */
+
 .sessions {
-  margin-top: 45px;
-  font-size: 2rem;
+  margin-top: 35px;
+  font-size: 1.3rem;
   color: #6b7280;
 }
 
@@ -165,33 +200,35 @@ body {
 /* Responsive */
 
 @media (max-width: 768px) {
-  .timer {
-    font-size: 3.8rem;
+  .pomodoro-card {
+    padding: 25px;
   }
 
   .title {
-    font-size: 1.8rem;
+    font-size: 1.7rem;
   }
 
-  .status {
-    font-size: 1.2rem;
+  .timer-editor select,
+  .timer-editor span {
+    font-size: 2.5rem;
+  }
+
+  .timer-editor select {
+    width: 65px;
   }
 
   .buttons button,
   .modes button,
-  .custom-mode button {
+  .custom-mode button,
+  .custom-mode input {
     width: 100%;
   }
 
-  .time-editor {
-    flex-direction: column;
-  }
-
-  .time-editor input {
-    width: 100%;
+  .status {
+    font-size: 1.1rem;
   }
 
   .sessions {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
   }
 }

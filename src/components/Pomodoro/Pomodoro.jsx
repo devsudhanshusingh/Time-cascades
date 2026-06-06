@@ -1,21 +1,33 @@
 import React, { useEffect, useState } from "react";
 import "./Pomodoro.css";
+import axios from "axios";
 
 const Pomodoro = () => {
   const [label, setLabel] = useState("");
   const [timeLeft, setTimeLeft] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [sessions, setSessions] = useState(0);
+  const [sessionId, setSessionId] = useState(null);
 
-  // Time Inputs
-  const [hours, setHours] = useState("");
-  const [minutes, setMinutes] = useState("");
-  const [seconds, setSeconds] = useState("");
-
-  // Custom Mode
   const [customMode, setCustomMode] = useState("");
-  const [isCustomAdded, setIsCustomAdded] = useState(false);
   const [isEditing, setIsEditing] = useState(true);
+
+  useEffect(() => {
+    // fetch existing sessions count
+    const fetchSessions = async () => {
+      try {
+        const res = await axios.get(
+          "https://my-server-1-nvrv.onrender.com/api/pomodoros",
+        );
+
+        if (Array.isArray(res.data)) setSessions(res.data.length);
+      } catch (error) {
+        console.error("Failed to fetch pomodoro sessions:", error);
+      }
+    };
+
+    fetchSessions();
+  }, []);
 
   useEffect(() => {
     let timer;
@@ -29,36 +41,41 @@ const Pomodoro = () => {
     if (timeLeft === 0 && isRunning) {
       setIsRunning(false);
       setSessions((prev) => prev + 1);
+      // mark session complete on server
+      if (sessionId) {
+        axios
+          .patch(
+            `https://my-server-1-nvrv.onrender.com/api/pomodoros/${sessionId}/complete`,
+          )
+          .catch((err) => console.error("Complete session failed", err));
+      }
     }
 
     return () => clearInterval(timer);
-  }, [isRunning, timeLeft]);
+  }, [isRunning, timeLeft, sessionId]);
 
-  // Format Timer
-  const formatTime = () => {
-    const hrs = Math.floor(timeLeft / 3600);
-    const mins = Math.floor((timeLeft % 3600) / 60);
-    const secs = timeLeft % 60;
+  const hrs = Math.floor(timeLeft / 3600);
+  const mins = Math.floor((timeLeft % 3600) / 60);
+  const secs = timeLeft % 60;
 
-    return `${String(hrs).padStart(2, "0")}:${String(mins).padStart(
-      2,
-      "0",
-    )}:${String(secs).padStart(2, "0")}`;
+  const updateTime = (part, value) => {
+    if (isRunning) return;
+
+    let h = hrs;
+    let m = mins;
+    let s = secs;
+
+    if (part === "h") h = Number(value);
+    if (part === "m") m = Number(value);
+    if (part === "s") s = Number(value);
+
+    setTimeLeft(h * 3600 + m * 60 + s);
   };
 
-  // Total Seconds
-  const calculateTotalSeconds = () => {
-    return (
-      Number(hours || 0) * 3600 +
-      Number(minutes || 0) * 60 +
-      Number(seconds || 0)
-    );
-  };
-
-  // Modes
-  const setTimerMode = (name) => {
-    setLabel(name);
-    setIsRunning(false);
+  const setTimerMode = (mode) => {
+    if (!isRunning) {
+      setLabel(mode);
+    }
   };
 
   return (
@@ -66,92 +83,153 @@ const Pomodoro = () => {
       <div className="pomodoro-card">
         <h1 className="title">🕒 Pomodoro Timer</h1>
 
-        {/* Timer */}
+        {/* Timer + Input */}
 
-        <h2 className="timer">{formatTime()}</h2>
+        <div className="timer-editor">
+          <select
+            value={hrs}
+            disabled={isRunning}
+            onChange={(e) => updateTime("h", e.target.value)}
+          >
+            {[...Array(24)].map((_, i) => (
+              <option key={i} value={i}>
+                {String(i).padStart(2, "0")}
+              </option>
+            ))}
+          </select>
 
-        {/* Mode Label */}
+          <span>:</span>
 
-        <p className="status">{label || "Select a mode"}</p>
+          <select
+            value={mins}
+            disabled={isRunning}
+            onChange={(e) => updateTime("m", e.target.value)}
+          >
+            {[...Array(60)].map((_, i) => (
+              <option key={i} value={i}>
+                {String(i).padStart(2, "0")}
+              </option>
+            ))}
+          </select>
 
-        {/* Time Inputs */}
+          <span>:</span>
 
-        <div className="time-editor">
-          <input
-            type="number"
-            placeholder="HH"
-            value={hours}
-            onChange={(e) => setHours(e.target.value)}
-          />
-
-          <input
-            type="number"
-            placeholder="MM"
-            value={minutes}
-            onChange={(e) => setMinutes(e.target.value)}
-          />
-
-          <input
-            type="number"
-            placeholder="SS"
-            value={seconds}
-            onChange={(e) => setSeconds(e.target.value)}
-          />
+          <select
+            value={secs}
+            disabled={isRunning}
+            onChange={(e) => updateTime("s", e.target.value)}
+          >
+            {[...Array(60)].map((_, i) => (
+              <option key={i} value={i}>
+                {String(i).padStart(2, "0")}
+              </option>
+            ))}
+          </select>
         </div>
+
+        <p className="status">{label || "Select mode"}</p>
 
         {/* Buttons */}
 
         <div className="buttons">
           <button
             className="start"
-            onClick={() => {
-              if (!timeLeft) {
-                setTimeLeft(calculateTotalSeconds());
-              }
+            onClick={async () => {
+              if (timeLeft > 0) {
+                setIsRunning(true);
 
-              setIsRunning(true);
+                try {
+                  if (!sessionId) {
+                    const res = await axios.post(
+                      "https://my-server-1-nvrv.onrender.com/api/pomodoros",
+                      {
+                        label: label || "",
+                        timeLeft,
+                        duration: timeLeft,
+                      },
+                    );
+
+                    const id = res.data._id || res.data.id;
+                    setSessionId(id);
+                  } else {
+                    await axios.patch(
+                      `https://my-server-1-nvrv.onrender.com/api/pomodoros/${sessionId}/start`,
+                    );
+                  }
+                } catch (error) {
+                  console.error("Failed to start session:", error);
+                }
+              }
             }}
           >
             Start
           </button>
 
-          <button className="pause" onClick={() => setIsRunning(false)}>
+          <button
+            className="pause"
+            onClick={async () => {
+              setIsRunning(false);
+
+              if (sessionId) {
+                try {
+                  await axios.patch(
+                    `https://my-server-1-nvrv.onrender.com/api/pomodoros/${sessionId}/pause`,
+                  );
+                } catch (error) {
+                  console.error("Failed to pause session:", error);
+                }
+              }
+            }}
+          >
             Pause
           </button>
 
           <button
             className="reset"
-            onClick={() => {
-              setTimeLeft(calculateTotalSeconds());
+            onClick={async () => {
+              setTimeLeft(1500);
               setIsRunning(false);
+
+              if (sessionId) {
+                try {
+                  await axios.patch(
+                    `https://my-server-1-nvrv.onrender.com/api/pomodoros/${sessionId}/reset`,
+                  );
+                } catch (error) {
+                  console.error("Failed to reset session:", error);
+                }
+              }
             }}
           >
             Reset
           </button>
         </div>
 
-        {/* Default Modes */}
-
         <div className="modes">
-          <button onClick={() => setTimerMode("Work")}>Work</button>
+          <button disabled={isRunning} onClick={() => setTimerMode("Work")}>
+            Work
+          </button>
 
-          <button onClick={() => setTimerMode("Study")}>Study</button>
+          <button disabled={isRunning} onClick={() => setTimerMode("Study")}>
+            Study
+          </button>
 
-          <button onClick={() => setTimerMode("Break")}>Break</button>
+          <button disabled={isRunning} onClick={() => setTimerMode("Break")}>
+            Break
+          </button>
         </div>
-
-        {/* Custom Mode */}
 
         <div className="custom-mode">
           <input
             type="text"
-            placeholder="Custom Mode"
             value={customMode}
-            disabled={!isEditing}
+            placeholder="Custom Mode"
+            disabled={!isEditing || isRunning}
             onChange={(e) => setCustomMode(e.target.value)}
           />
 
           <button
+            disabled={isRunning}
             onClick={() => {
               if (isEditing) {
                 if (customMode.trim()) {
@@ -163,14 +241,13 @@ const Pomodoro = () => {
               }
             }}
           >
-            {isEditing ? "Submit" : "Edit"}
+            {isEditing ? "Set" : "Edit"}
           </button>
         </div>
 
-        {/* Sessions */}
-
         <p className="sessions">
-          🍅 Sessions completed: <span>{sessions}</span>
+          🎃 Sessions completed:
+          <span> {sessions}</span>
         </p>
       </div>
     </div>

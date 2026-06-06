@@ -1,30 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./DrinkWater.css";
+import axios from "axios";
 
 const DrinkWater = () => {
   const smallCupSize = 250;
 
-  // Goal Inputs
   const [liters, setLiters] = useState("");
-  const [ml, setMl] = useState("");
-
-  // Final Goal
   const [goalML, setGoalML] = useState(0);
+  const [currentLogId, setCurrentLogId] = useState(null);
 
-  // Edit / Submit
   const [isEditing, setIsEditing] = useState(true);
-
-  // Selected Cups
   const [selectedCups, setSelectedCups] = useState([]);
 
-  // Total Goal
-  const totalGoal = Number(liters || 0) * 1000 + Number(ml || 0);
+  useEffect(() => {
+    const fetchToday = async () => {
+      try {
+        const res = await axios.get(
+          "https://my-server-1-nvrv.onrender.com/api/drink-water/today",
+        );
 
-  // Total Cups
+        if (res.data) {
+          const log = res.data;
+          setCurrentLogId(log._id || log.id || null);
+          setLiters(log.goalLiters ? String(log.goalLiters) : "");
+          setGoalML(log.goalLiters ? Number(log.goalLiters) * 1000 : 0);
+
+          // if API returns cups info, set selectedCups accordingly
+          if (Array.isArray(log.cups)) {
+            const cups = log.cups.map((_, idx) => idx);
+            setSelectedCups(cups);
+          } else if (typeof log.filledAmount === "number") {
+            const count = Math.floor((log.filledAmount || 0) / smallCupSize);
+            setSelectedCups(Array.from({ length: count }, (_, i) => i));
+          }
+        }
+      } catch (error) {
+        // no today's log or failed
+        // console.error('Failed to fetch today log', error)
+      }
+    };
+
+    fetchToday();
+  }, []);
+
+  const totalGoal = Number(liters || 0) * 1000;
+
   const totalCups = goalML ? Math.ceil(goalML / smallCupSize) : 0;
 
-  // Cup Click
-  const handleCupClick = (idx) => {
+  const handleCupClick = async (idx) => {
+    // optimistic local update
     let updated = [...selectedCups];
 
     if (updated.includes(idx)) {
@@ -34,9 +58,38 @@ const DrinkWater = () => {
     }
 
     setSelectedCups(updated);
+
+    if (!currentLogId) return;
+
+    try {
+      await axios.patch(
+        `https://my-server-1-nvrv.onrender.com/api/drink-water/${currentLogId}/toggle-cup`,
+      );
+
+      // re-fetch today's log to sync exact state
+      const res = await axios.get(
+        "https://my-server-1-nvrv.onrender.com/api/drink-water/today",
+      );
+
+      if (res.data) {
+        const log = res.data;
+        setCurrentLogId(log._id || log.id || null);
+        setLiters(log.goalLiters ? String(log.goalLiters) : "");
+        setGoalML(log.goalLiters ? Number(log.goalLiters) * 1000 : 0);
+
+        if (Array.isArray(log.cups)) {
+          const cups = log.cups.map((_, i) => i);
+          setSelectedCups(cups);
+        } else if (typeof log.filledAmount === "number") {
+          const count = Math.floor((log.filledAmount || 0) / smallCupSize);
+          setSelectedCups(Array.from({ length: count }, (_, i) => i));
+        }
+      }
+    } catch (error) {
+      console.error("Failed to toggle cup:", error);
+    }
   };
 
-  // Water Calculation
   const filledAmount = selectedCups.length * smallCupSize;
 
   const remained = ((goalML - filledAmount) / 1000).toFixed(2);
@@ -45,100 +98,104 @@ const DrinkWater = () => {
 
   return (
     <div className="drinkwater-container">
-      <h1>Drink Water</h1>
+      <div className="drinkwater-card">
+        <h1>💧 Drink Water</h1>
 
-      {/* Goal Inputs */}
+        {/* Goal Input */}
 
-      <div className="glass-input">
-        <input
-          type="number"
-          placeholder="Liters"
-          value={liters}
-          disabled={!isEditing}
-          onChange={(e) => setLiters(e.target.value)}
-        />
+        <div className="glass-input">
+          <input
+            type="number"
+            step="0.1"
+            placeholder="Enter liters (ex: 2.5)"
+            value={liters}
+            disabled={!isEditing}
+            onChange={(e) => setLiters(e.target.value)}
+          />
 
-        <input
-          type="number"
-          placeholder="ML"
-          value={ml}
-          disabled={!isEditing}
-          onChange={(e) => setMl(e.target.value)}
-        />
+          <button
+            onClick={async () => {
+              if (isEditing) {
+                if (totalGoal > 0) {
+                  try {
+                    const payload = { goalLiters: Number(liters) };
 
-        <button
-          onClick={() => {
-            if (isEditing) {
-              if (totalGoal > 0) {
-                setGoalML(totalGoal);
+                    const res = await axios.post(
+                      "https://my-server-1-nvrv.onrender.com/api/drink-water",
+                      payload,
+                    );
 
-                setSelectedCups([]);
-
-                setIsEditing(false);
+                    const created = res.data;
+                    setCurrentLogId(created._id || created.id || null);
+                    setGoalML(
+                      created.goalLiters
+                        ? Number(created.goalLiters) * 1000
+                        : totalGoal,
+                    );
+                    setSelectedCups([]);
+                    setIsEditing(false);
+                  } catch (error) {
+                    console.error("Failed to create drink-water log:", error);
+                  }
+                }
+              } else {
+                setIsEditing(true);
               }
-            } else {
-              setIsEditing(true);
-            }
-          }}
-        >
-          {isEditing ? "Submit" : "Edit"}
-        </button>
-      </div>
-
-      {/* Goal Text */}
-
-      <h3>Goal: {(goalML / 1000).toFixed(2)} Liters</h3>
-
-      {/* Big Cup */}
-
-      <div className="cup">
-        {/* Remaining */}
-
-        {percentage < 100 && (
-          <div
-            className="remained"
-            style={{
-              height: `${100 - percentage}%`,
             }}
           >
-            <span>{remained}L</span>
+            {isEditing ? "Submit" : "Edit"}
+          </button>
+        </div>
 
-            <small>Remained</small>
-          </div>
-        )}
+        <h3>Goal: {liters || 0} L</h3>
 
-        {/* Filled */}
+        {/* Big Glass */}
 
-        {percentage > 0 && (
-          <div
-            className="percentage"
-            style={{
-              height: `${percentage}%`,
-            }}
-          >
-            {percentage}%
-          </div>
-        )}
-      </div>
+        <div className="cup">
+          {percentage < 100 && (
+            <div
+              className="remained"
+              style={{
+                height: `${100 - percentage}%`,
+              }}
+            >
+              <span>{remained}L</span>
 
-      <p className="text">
-        Select how many 250ml glasses of water that you have drank
-      </p>
+              <small>Remained</small>
+            </div>
+          )}
 
-      {/* Small Cups */}
+          {percentage > 0 && (
+            <div
+              className="percentage"
+              style={{
+                height: `${percentage}%`,
+              }}
+            >
+              {percentage}%
+            </div>
+          )}
+        </div>
 
-      <div className="cups">
-        {Array.from({
-          length: totalCups,
-        }).map((_, idx) => (
-          <div
-            key={idx}
-            className={`cup-small ${selectedCups.includes(idx) ? "full" : ""}`}
-            onClick={() => handleCupClick(idx)}
-          >
-            250 ml
-          </div>
-        ))}
+        <p className="text">Select your 250ml glasses</p>
+
+        {/* Small Glasses */}
+
+        <div className="cups">
+          {Array.from({
+            length: totalCups,
+          }).map((_, idx) => (
+            <div
+              key={idx}
+              className={`cup-small ${
+                selectedCups.includes(idx) ? "full" : ""
+              }`}
+              onClick={() => handleCupClick(idx)}
+            >
+              250ml
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
