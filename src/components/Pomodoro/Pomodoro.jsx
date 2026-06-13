@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./Pomodoro.css";
 import axios from "axios";
 
@@ -39,8 +39,10 @@ const Pomodoro = () => {
     }
 
     if (timeLeft === 0 && isRunning) {
-      setIsRunning(false);
-      setSessions((prev) => prev + 1);
+      setTimeout(() => {
+        setIsRunning(false);
+        setSessions((prev) => prev + 1);
+      }, 0);
       // mark session complete on server
       if (sessionId) {
         axios

@@ -1,10 +1,10 @@
-﻿import React, { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import "./NewYear.css";
 
 const NewYear = () => {
   const targetDate = new Date("January 1, 2027 00:00:00").getTime();
 
-  const calculateTimeLeft = () => {
+  const calculateTimeLeft = useCallback(() => {
     const now = new Date().getTime();
     const difference = targetDate - now;
 
@@ -19,7 +19,7 @@ const NewYear = () => {
     const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
     return { months, days, hours, minutes, seconds };
-  };
+  }, [targetDate]);
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
@@ -29,7 +29,7 @@ const NewYear = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [calculateTimeLeft]);
 
   const startOfYear = new Date("January 1, 2026 00:00:00").getTime();
   const endOfYear = new Date("January 1, 2027 00:00:00").getTime();

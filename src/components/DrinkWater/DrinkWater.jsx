@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./DrinkWater.css";
 import axios from "axios";
 
@@ -34,7 +34,7 @@ const DrinkWater = () => {
             setSelectedCups(Array.from({ length: count }, (_, i) => i));
           }
         }
-      } catch (error) {
+      } catch {
         // no today's log or failed
         // console.error('Failed to fetch today log', error)
       }

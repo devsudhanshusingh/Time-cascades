@@ -1,5 +1,3 @@
-﻿/* App.css */
-
 * {
   margin: 0;
   padding: 0;
@@ -7,32 +5,787 @@
 }
 
 body {
-  background: #ececec;
-  font-family: "Poppins", sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(135, 182, 204, 0.24), transparent 32rem),
+    linear-gradient(135deg, #f6f0e7 0%, #eef5f1 48%, #f4f6f8 100%);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 440px);
+  gap: 32px;
+  align-items: center;
+  padding: 40px;
+}
+
+.auth-hero {
+  min-height: 78vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 18px;
+  padding: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+  color: #fff;
+  background:
+    linear-gradient(180deg, rgba(16, 28, 24, 0.18), rgba(16, 28, 24, 0.82)),
+    url("./assets/yourname.jpg") center/cover;
+  box-shadow: 0 24px 70px rgba(22, 32, 29, 0.24);
+}
+
+.brand-mark {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.48);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.16);
+  font-weight: 800;
+}
+
+.auth-hero h1 {
+  max-width: 760px;
+  margin: 0;
+  color: #fff;
+  font-size: clamp(3rem, 7vw, 6.8rem);
+  line-height: 0.9;
+  letter-spacing: 0;
+}
+
+.auth-hero p {
+  max-width: 560px;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 1.1rem;
+}
+
+.hero-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.hero-metrics span {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-weight: 700;
+}
+
+.auth-card {
+  padding: 28px;
+  border: 1px solid rgba(23, 32, 28, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 20px 55px rgba(28, 42, 36, 0.12);
+  backdrop-filter: blur(18px);
+}
+
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 8px;
+  background: #e8ede9;
+}
+
+.auth-tabs button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #44524c;
+  font-weight: 800;
+}
+
+.auth-tabs button.active,
+.primary-action {
+  background: #1d6b5a;
+  color: #fff;
+}
+
+.auth-form {
+  display: grid;
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.auth-form label {
+  display: grid;
+  gap: 8px;
+  color: #4d5a54;
+  font-weight: 800;
+}
+
+.auth-form input {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid #d4ddd7;
+  border-radius: 8px;
+  background: #fff;
+  color: #17201c;
+  outline: none;
+  padding: 0 14px;
+}
+
+.auth-form input:focus {
+  border-color: #1d6b5a;
+  box-shadow: 0 0 0 4px rgba(29, 107, 90, 0.14);
+}
+
+.primary-action {
+  min-height: 46px;
+  border: 0;
+  border-radius: 8px;
+  padding: 0 16px;
+  font-weight: 800;
+}
+
+.primary-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.form-error {
+  color: #a83737;
+  font-weight: 700;
+}
+
+.api-note {
+  margin-top: 18px;
+  color: #69756f;
+  font-size: 0.86rem;
 }
 
 .dashboard {
+  --page-bg:
+    radial-gradient(circle at 12% 4%, rgba(255, 205, 105, 0.5), transparent 24rem),
+    radial-gradient(circle at 92% 10%, rgba(74, 144, 226, 0.2), transparent 26rem),
+    linear-gradient(135deg, #fff4d8 0%, #dff3f4 48%, #f8fbf2 100%);
+  --panel-bg: rgba(255, 255, 255, 0.86);
+  --panel-strong: #ffffff;
+  --panel-soft: rgba(255, 250, 238, 0.92);
+  --text-main: #18231f;
+  --text-muted: #65736d;
+  --accent: #e58b2a;
+  --accent-2: #238476;
+  --accent-soft: rgba(229, 139, 42, 0.15);
+  --border: rgba(33, 51, 45, 0.14);
+  --shadow: rgba(42, 54, 48, 0.16);
+  --topbar-text: #15352d;
+  --hero-filter: saturate(1.08) brightness(1.03);
   width: 100%;
   min-height: 100vh;
+  color: var(--text-main);
+  background: var(--page-bg);
+  transition:
+    background 0.35s ease,
+    color 0.35s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard[data-theme="moon-night"] {
+  --page-bg:
+    radial-gradient(circle at 18% 8%, rgba(211, 229, 255, 0.18), transparent 22rem),
+    radial-gradient(circle at 90% 18%, rgba(122, 116, 255, 0.2), transparent 26rem),
+    linear-gradient(135deg, #101827 0%, #172236 52%, #221b32 100%);
+  --panel-bg: rgba(20, 31, 49, 0.86);
+  --panel-strong: #182337;
+  --panel-soft: rgba(25, 37, 58, 0.9);
+  --text-main: #f3f7ff;
+  --text-muted: #b4c2d7;
+  --accent: #c3d8ff;
+  --accent-2: #8ea7ff;
+  --accent-soft: rgba(142, 167, 255, 0.18);
+  --border: rgba(221, 231, 255, 0.16);
+  --shadow: rgba(0, 0, 0, 0.28);
+  --topbar-text: #f4f7ff;
+  --hero-filter: saturate(0.95) brightness(0.82);
+}
+
+.dashboard[data-theme="rainy-day"] {
+  --page-bg:
+    radial-gradient(circle at 12% 0%, rgba(225, 247, 255, 0.92), transparent 20rem),
+    radial-gradient(circle at 88% 12%, rgba(92, 165, 205, 0.34), transparent 28rem),
+    linear-gradient(155deg, #bed8e5 0%, #eaf7f7 42%, #a9c7d7 100%);
+  --panel-bg: rgba(205, 221, 217, 0.72);
+  --panel-strong: rgba(238, 247, 244, 0.86);
+  --panel-soft: rgba(190, 210, 207, 0.78);
+  --text-main: #12303b;
+  --text-muted: #536f7c;
+  --accent: #087fb0;
+  --accent-2: #1f8f86;
+  --accent-soft: rgba(8, 127, 176, 0.17);
+  --border: rgba(75, 103, 93, 0.24);
+  --shadow: rgba(31, 63, 58, 0.24);
+  --topbar-text: #102f3b;
+  --hero-filter: saturate(1.03) brightness(0.96);
+}
+
+.dashboard[data-theme="rainy-night"] {
+  --page-bg:
+    radial-gradient(circle at 80% 0%, rgba(88, 147, 197, 0.24), transparent 23rem),
+    radial-gradient(circle at 16% 12%, rgba(51, 94, 123, 0.28), transparent 22rem),
+    linear-gradient(135deg, #081522 0%, #102839 48%, #182234 100%);
+  --panel-bg: rgba(16, 29, 34, 0.82);
+  --panel-strong: rgba(22, 42, 49, 0.9);
+  --panel-soft: rgba(20, 39, 45, 0.9);
+  --text-main: #edf8ff;
+  --text-muted: #a9bdc8;
+  --accent: #63c4f1;
+  --accent-2: #8ec7a8;
+  --accent-soft: rgba(99, 196, 241, 0.16);
+  --border: rgba(194, 226, 244, 0.16);
+  --shadow: rgba(0, 0, 0, 0.32);
+  --topbar-text: #f0f9ff;
+  --hero-filter: saturate(0.92) brightness(0.72);
+}
+
+.dashboard > :not(.rain-layer) {
+  position: relative;
+  z-index: 1;
+}
+
+.rain-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  display: none;
+  overflow: hidden;
+}
+
+.dashboard[data-theme="rainy-day"] .rain-layer,
+.dashboard[data-theme="rainy-night"] .rain-layer {
+  display: block;
+}
+
+.dashboard[data-theme="rainy-day"]::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(115deg, rgba(255, 255, 255, 0.42), transparent 34%),
+    repeating-linear-gradient(
+      105deg,
+      rgba(255, 255, 255, 0.16) 0 1px,
+      transparent 1px 22px
+    );
+  opacity: 0.52;
+}
+
+.dashboard[data-theme="rainy-day"] .topbar,
+.dashboard[data-theme="rainy-night"] .topbar,
+.dashboard[data-theme="rainy-day"] .countdown-card,
+.dashboard[data-theme="rainy-night"] .countdown-card,
+.dashboard[data-theme="rainy-day"] .pomodoro-card,
+.dashboard[data-theme="rainy-night"] .pomodoro-card,
+.dashboard[data-theme="rainy-day"] .drinkwater-card,
+.dashboard[data-theme="rainy-night"] .drinkwater-card,
+.dashboard[data-theme="rainy-day"] .goal-card-face,
+.dashboard[data-theme="rainy-night"] .goal-card-face,
+.dashboard[data-theme="rainy-day"] .daily-tasks-card {
+  backdrop-filter: blur(18px) saturate(1.18);
+  -webkit-backdrop-filter: blur(18px) saturate(1.18);
+}
+
+.dashboard[data-theme="rainy-night"] .daily-tasks-card {
+  backdrop-filter: blur(18px) saturate(1.18);
+  -webkit-backdrop-filter: blur(18px) saturate(1.18);
+}
+
+.dashboard[data-theme="rainy-day"] .countdown-card,
+.dashboard[data-theme="rainy-night"] .countdown-card,
+.dashboard[data-theme="rainy-day"] .pomodoro-card,
+.dashboard[data-theme="rainy-night"] .pomodoro-card,
+.dashboard[data-theme="rainy-day"] .drinkwater-card,
+.dashboard[data-theme="rainy-night"] .drinkwater-card,
+.dashboard[data-theme="rainy-day"] .goal-card-face,
+.dashboard[data-theme="rainy-night"] .goal-card-face,
+.dashboard[data-theme="rainy-day"] .daily-tasks-card,
+.dashboard[data-theme="rainy-night"] .daily-tasks-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard[data-theme="rainy-day"] .countdown-card::before,
+.dashboard[data-theme="rainy-night"] .countdown-card::before,
+.dashboard[data-theme="rainy-day"] .pomodoro-card::before,
+.dashboard[data-theme="rainy-night"] .pomodoro-card::before,
+.dashboard[data-theme="rainy-day"] .drinkwater-card::before,
+.dashboard[data-theme="rainy-night"] .drinkwater-card::before,
+.dashboard[data-theme="rainy-day"] .goal-card-face::before,
+.dashboard[data-theme="rainy-night"] .goal-card-face::before,
+.dashboard[data-theme="rainy-day"] .daily-tasks-card::before,
+.dashboard[data-theme="rainy-night"] .daily-tasks-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      105deg,
+      transparent 0 7%,
+      rgba(231, 249, 255, 0.52) 7.4%,
+      transparent 8.2% 22%,
+      rgba(231, 249, 255, 0.38) 22.4%,
+      transparent 23.1% 41%,
+      rgba(231, 249, 255, 0.44) 41.5%,
+      transparent 42.2% 66%,
+      rgba(231, 249, 255, 0.34) 66.5%,
+      transparent 67.2% 100%
+    ),
+    linear-gradient(
+      105deg,
+      transparent 0 14%,
+      rgba(92, 164, 191, 0.24) 14.4%,
+      transparent 15.1% 36%,
+      rgba(92, 164, 191, 0.2) 36.5%,
+      transparent 37.2% 58%,
+      rgba(92, 164, 191, 0.24) 58.5%,
+      transparent 59.3% 100%
+    );
+  background-size:
+    150px 220px,
+    240px 280px;
+  opacity: 0.74;
+  filter: blur(0.2px);
+  mix-blend-mode: screen;
+  animation: cardRainFall 1.15s linear infinite;
+}
+
+.dashboard[data-theme="rainy-night"] .countdown-card::before,
+.dashboard[data-theme="rainy-night"] .pomodoro-card::before,
+.dashboard[data-theme="rainy-night"] .drinkwater-card::before,
+.dashboard[data-theme="rainy-night"] .goal-card-face::before,
+.dashboard[data-theme="rainy-night"] .daily-tasks-card::before {
+  opacity: 0.5;
+  filter: blur(0.25px) brightness(0.78);
+}
+
+.dashboard[data-theme="rainy-day"] .countdown-card::after,
+.dashboard[data-theme="rainy-night"] .countdown-card::after,
+.dashboard[data-theme="rainy-day"] .pomodoro-card::after,
+.dashboard[data-theme="rainy-night"] .pomodoro-card::after,
+.dashboard[data-theme="rainy-day"] .drinkwater-card::after,
+.dashboard[data-theme="rainy-night"] .drinkwater-card::after,
+.dashboard[data-theme="rainy-day"] .goal-card-face::after,
+.dashboard[data-theme="rainy-night"] .goal-card-face::after,
+.dashboard[data-theme="rainy-day"] .daily-tasks-card::after,
+.dashboard[data-theme="rainy-night"] .daily-tasks-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      105deg,
+      transparent 0 4%,
+      rgba(255, 255, 255, 0.22) 4.5%,
+      transparent 5.2% 19%,
+      rgba(255, 255, 255, 0.18) 19.5%,
+      transparent 20.2% 51%,
+      rgba(255, 255, 255, 0.2) 51.5%,
+      transparent 52.3% 79%,
+      rgba(255, 255, 255, 0.16) 79.5%,
+      transparent 80.3% 100%
+    );
+  background-size:
+    110px 190px;
+  opacity: 0.58;
+  mix-blend-mode: screen;
+  animation: cardRainFallFast 0.82s linear infinite;
+}
+
+.dashboard[data-theme="rainy-night"] .countdown-card::after,
+.dashboard[data-theme="rainy-night"] .pomodoro-card::after,
+.dashboard[data-theme="rainy-night"] .drinkwater-card::after,
+.dashboard[data-theme="rainy-night"] .goal-card-face::after,
+.dashboard[data-theme="rainy-night"] .daily-tasks-card::after {
+  opacity: 0.28;
+}
+
+.dashboard[data-theme="rainy-day"] .countdown-card > *,
+.dashboard[data-theme="rainy-night"] .countdown-card > *,
+.dashboard[data-theme="rainy-day"] .pomodoro-card > *,
+.dashboard[data-theme="rainy-night"] .pomodoro-card > *,
+.dashboard[data-theme="rainy-day"] .drinkwater-card > *,
+.dashboard[data-theme="rainy-night"] .drinkwater-card > *,
+.dashboard[data-theme="rainy-day"] .goal-card-face > *,
+.dashboard[data-theme="rainy-night"] .goal-card-face > *,
+.dashboard[data-theme="rainy-day"] .daily-tasks-card > *,
+.dashboard[data-theme="rainy-night"] .daily-tasks-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.dashboard[data-theme="rainy-day"] .topbar,
+.dashboard[data-theme="rainy-night"] .topbar {
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard[data-theme="rainy-day"] .topbar::before,
+.dashboard[data-theme="rainy-night"] .topbar::before {
+  content: "";
+  position: absolute;
+  inset: -36px -8% auto -8%;
+  height: 112px;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 10% 78%, rgba(255, 255, 255, 0.86) 0 13%, transparent 14%),
+    radial-gradient(ellipse at 23% 66%, rgba(255, 255, 255, 0.78) 0 17%, transparent 18%),
+    radial-gradient(ellipse at 40% 72%, rgba(255, 255, 255, 0.72) 0 16%, transparent 17%),
+    radial-gradient(ellipse at 57% 67%, rgba(255, 255, 255, 0.66) 0 18%, transparent 19%),
+    radial-gradient(ellipse at 76% 73%, rgba(255, 255, 255, 0.72) 0 16%, transparent 17%),
+    radial-gradient(ellipse at 92% 68%, rgba(255, 255, 255, 0.62) 0 14%, transparent 15%);
+  opacity: 0.42;
+  filter: blur(1px);
+}
+
+.dashboard[data-theme="rainy-night"] .topbar::before {
+  background:
+    radial-gradient(ellipse at 10% 78%, rgba(118, 155, 182, 0.72) 0 13%, transparent 14%),
+    radial-gradient(ellipse at 23% 66%, rgba(92, 129, 158, 0.66) 0 17%, transparent 18%),
+    radial-gradient(ellipse at 40% 72%, rgba(102, 138, 166, 0.58) 0 16%, transparent 17%),
+    radial-gradient(ellipse at 57% 67%, rgba(78, 112, 142, 0.62) 0 18%, transparent 19%),
+    radial-gradient(ellipse at 76% 73%, rgba(95, 132, 160, 0.64) 0 16%, transparent 17%),
+    radial-gradient(ellipse at 92% 68%, rgba(76, 108, 136, 0.58) 0 14%, transparent 15%);
+  opacity: 0.58;
+}
+
+.dashboard[data-theme="rainy-day"] .topbar > *,
+.dashboard[data-theme="rainy-night"] .topbar > * {
+  position: relative;
+  z-index: 1;
+}
+
+.dashboard[data-theme="rainy-day"] .quote-card {
+  box-shadow:
+    0 14px 30px rgba(24, 83, 112, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.34);
+}
+
+.dashboard[data-theme="rainy-day"] .rain-layer span {
+  width: 3px;
+  height: 72px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0),
+    rgba(231, 249, 255, 0.94)
+  );
+  opacity: 0.88;
+  filter: drop-shadow(0 0 5px rgba(60, 154, 196, 0.34));
+  animation-duration: 1.05s;
+}
+
+.dashboard[data-theme="rainy-night"] .rain-layer span {
+  width: 3px;
+  height: 76px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0),
+    rgba(145, 211, 244, 0.82)
+  );
+  opacity: 0.78;
+  filter: drop-shadow(0 0 6px rgba(91, 184, 232, 0.22));
+  animation-duration: 1s;
+}
+
+.rain-layer span {
+  position: absolute;
+  top: -90px;
+  width: 2px;
+  height: 58px;
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0),
+    rgba(167, 222, 248, 0.72)
+  );
+  opacity: 0.72;
+  animation: rainDrop 1.25s linear infinite;
+}
+
+.rain-layer span:nth-child(3n) {
+  height: 42px;
+  opacity: 0.52;
+  animation-duration: 1.55s;
+}
+
+.rain-layer span:nth-child(4n) {
+  width: 3px;
+  height: 70px;
+  opacity: 0.44;
+  animation-duration: 1.05s;
+}
+
+.rain-layer span:nth-child(1) { left: 2%; animation-delay: -0.2s; }
+.rain-layer span:nth-child(2) { left: 6%; animation-delay: -1.1s; }
+.rain-layer span:nth-child(3) { left: 9%; animation-delay: -0.7s; }
+.rain-layer span:nth-child(4) { left: 13%; animation-delay: -1.4s; }
+.rain-layer span:nth-child(5) { left: 17%; animation-delay: -0.4s; }
+.rain-layer span:nth-child(6) { left: 21%; animation-delay: -1.8s; }
+.rain-layer span:nth-child(7) { left: 25%; animation-delay: -0.9s; }
+.rain-layer span:nth-child(8) { left: 29%; animation-delay: -1.2s; }
+.rain-layer span:nth-child(9) { left: 33%; animation-delay: -0.1s; }
+.rain-layer span:nth-child(10) { left: 37%; animation-delay: -1.6s; }
+.rain-layer span:nth-child(11) { left: 40%; animation-delay: -0.6s; }
+.rain-layer span:nth-child(12) { left: 44%; animation-delay: -1.3s; }
+.rain-layer span:nth-child(13) { left: 48%; animation-delay: -0.8s; }
+.rain-layer span:nth-child(14) { left: 51%; animation-delay: -1.9s; }
+.rain-layer span:nth-child(15) { left: 55%; animation-delay: -0.3s; }
+.rain-layer span:nth-child(16) { left: 58%; animation-delay: -1.5s; }
+.rain-layer span:nth-child(17) { left: 62%; animation-delay: -0.95s; }
+.rain-layer span:nth-child(18) { left: 65%; animation-delay: -1.7s; }
+.rain-layer span:nth-child(19) { left: 69%; animation-delay: -0.45s; }
+.rain-layer span:nth-child(20) { left: 72%; animation-delay: -1.25s; }
+.rain-layer span:nth-child(21) { left: 76%; animation-delay: -0.75s; }
+.rain-layer span:nth-child(22) { left: 79%; animation-delay: -1.85s; }
+.rain-layer span:nth-child(23) { left: 82%; animation-delay: -0.15s; }
+.rain-layer span:nth-child(24) { left: 85%; animation-delay: -1.35s; }
+.rain-layer span:nth-child(25) { left: 88%; animation-delay: -0.55s; }
+.rain-layer span:nth-child(26) { left: 91%; animation-delay: -1.65s; }
+.rain-layer span:nth-child(27) { left: 94%; animation-delay: -0.35s; }
+.rain-layer span:nth-child(28) { left: 97%; animation-delay: -1.05s; }
+.rain-layer span:nth-child(29) { left: 11%; animation-delay: -1.75s; }
+.rain-layer span:nth-child(30) { left: 31%; animation-delay: -0.25s; }
+.rain-layer span:nth-child(31) { left: 53%; animation-delay: -1.45s; }
+.rain-layer span:nth-child(32) { left: 67%; animation-delay: -0.65s; }
+.rain-layer span:nth-child(33) { left: 74%; animation-delay: -1.95s; }
+.rain-layer span:nth-child(34) { left: 96%; animation-delay: -0.85s; }
+.rain-layer span:nth-child(35) { left: 4%; animation-delay: -1.35s; }
+.rain-layer span:nth-child(36) { left: 8%; animation-delay: -0.5s; }
+.rain-layer span:nth-child(37) { left: 15%; animation-delay: -1.15s; }
+.rain-layer span:nth-child(38) { left: 19%; animation-delay: -0.8s; }
+.rain-layer span:nth-child(39) { left: 24%; animation-delay: -1.95s; }
+.rain-layer span:nth-child(40) { left: 28%; animation-delay: -0.35s; }
+.rain-layer span:nth-child(41) { left: 35%; animation-delay: -1.55s; }
+.rain-layer span:nth-child(42) { left: 39%; animation-delay: -0.95s; }
+.rain-layer span:nth-child(43) { left: 43%; animation-delay: -1.75s; }
+.rain-layer span:nth-child(44) { left: 47%; animation-delay: -0.15s; }
+.rain-layer span:nth-child(45) { left: 50%; animation-delay: -1.05s; }
+.rain-layer span:nth-child(46) { left: 54%; animation-delay: -0.7s; }
+.rain-layer span:nth-child(47) { left: 57%; animation-delay: -1.85s; }
+.rain-layer span:nth-child(48) { left: 61%; animation-delay: -0.4s; }
+.rain-layer span:nth-child(49) { left: 64%; animation-delay: -1.25s; }
+.rain-layer span:nth-child(50) { left: 68%; animation-delay: -0.6s; }
+.rain-layer span:nth-child(51) { left: 71%; animation-delay: -1.65s; }
+.rain-layer span:nth-child(52) { left: 75%; animation-delay: -0.2s; }
+.rain-layer span:nth-child(53) { left: 78%; animation-delay: -1.45s; }
+.rain-layer span:nth-child(54) { left: 81%; animation-delay: -0.9s; }
+.rain-layer span:nth-child(55) { left: 84%; animation-delay: -1.2s; }
+.rain-layer span:nth-child(56) { left: 87%; animation-delay: -0.55s; }
+.rain-layer span:nth-child(57) { left: 90%; animation-delay: -1.9s; }
+.rain-layer span:nth-child(58) { left: 93%; animation-delay: -0.75s; }
+.rain-layer span:nth-child(59) { left: 98%; animation-delay: -1.5s; }
+.rain-layer span:nth-child(60) { left: 1%; animation-delay: -0.05s; }
+.rain-layer span:nth-child(61) { left: 14%; animation-delay: -1.7s; }
+.rain-layer span:nth-child(62) { left: 27%; animation-delay: -0.85s; }
+.rain-layer span:nth-child(63) { left: 38%; animation-delay: -1.3s; }
+.rain-layer span:nth-child(64) { left: 49%; animation-delay: -0.25s; }
+.rain-layer span:nth-child(65) { left: 60%; animation-delay: -1.1s; }
+.rain-layer span:nth-child(66) { left: 73%; animation-delay: -0.45s; }
+.rain-layer span:nth-child(67) { left: 86%; animation-delay: -1.8s; }
+.rain-layer span:nth-child(68) { left: 99%; animation-delay: -0.65s; }
+
+@keyframes rainDrop {
+  from {
+    transform: translate3d(0, -120px, 0) rotate(12deg);
+  }
+
+  to {
+    transform: translate3d(-70px, calc(100vh + 160px), 0) rotate(12deg);
+  }
+}
+
+@keyframes cardRainFall {
+  from {
+    background-position:
+      0 -220px,
+      0 -280px;
+  }
+
+  to {
+    background-position:
+      -70px 220px,
+      -90px 280px;
+  }
+}
+
+@keyframes cardRainFallFast {
+  from {
+    background-position: 0 -190px;
+  }
+
+  to {
+    background-position: -70px 190px;
+  }
+}
+
+@keyframes cardDroplets {
+  from {
+    background-position:
+      0 0,
+      0 0,
+      0 0,
+      0 0,
+      0 0,
+      0 0,
+      0 0,
+      0 0,
+      0 0,
+      0 0,
+      0 0,
+      0 0;
+  }
+
+  to {
+    background-position:
+      0 64px,
+      0 94px,
+      0 82px,
+      0 126px,
+      0 88px,
+      0 132px,
+      0 78px,
+      0 120px,
+      0 168px,
+      0 176px,
+      0 56px,
+      0 112px;
+  }
+}
+
+@keyframes cardWaterTrails {
+  from {
+    background-position:
+      0 -100%,
+      0 -100%,
+      0 -100%,
+      0 -100%,
+      0 -100%;
+  }
+
+  to {
+    background-position:
+      0 100%,
+      0 100%,
+      0 100%,
+      0 100%,
+      0 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rain-layer span {
+    animation: none;
+    top: 8vh;
+  }
+
+  .dashboard[data-theme="rainy-day"] .countdown-card::before,
+  .dashboard[data-theme="rainy-night"] .countdown-card::before,
+  .dashboard[data-theme="rainy-day"] .pomodoro-card::before,
+  .dashboard[data-theme="rainy-night"] .pomodoro-card::before,
+  .dashboard[data-theme="rainy-day"] .drinkwater-card::before,
+  .dashboard[data-theme="rainy-night"] .drinkwater-card::before,
+  .dashboard[data-theme="rainy-day"] .goal-card-face::before,
+  .dashboard[data-theme="rainy-night"] .goal-card-face::before,
+  .dashboard[data-theme="rainy-day"] .daily-tasks-card::before,
+  .dashboard[data-theme="rainy-night"] .daily-tasks-card::before,
+  .dashboard[data-theme="rainy-day"] .countdown-card::after,
+  .dashboard[data-theme="rainy-night"] .countdown-card::after,
+  .dashboard[data-theme="rainy-day"] .pomodoro-card::after,
+  .dashboard[data-theme="rainy-night"] .pomodoro-card::after,
+  .dashboard[data-theme="rainy-day"] .drinkwater-card::after,
+  .dashboard[data-theme="rainy-night"] .drinkwater-card::after,
+  .dashboard[data-theme="rainy-day"] .goal-card-face::after,
+  .dashboard[data-theme="rainy-night"] .goal-card-face::after,
+  .dashboard[data-theme="rainy-day"] .daily-tasks-card::after,
+  .dashboard[data-theme="rainy-night"] .daily-tasks-card::after {
+    animation: none;
+  }
+}
+
+.session-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 24px;
+  background: var(--panel-bg);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.session-bar button {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-strong);
+  color: var(--text-main);
+  font-weight: 800;
 }
 
 .main-content {
   padding: 30px;
 }
 
-/* GRID */
-
-.bottom-grid {
+.bottom-grid,
+.goal-todo-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 30px;
   margin-top: 30px;
 }
 
-/* RESPONSIVE */
+.goal-todo-grid.single-card {
+  grid-template-columns: 1fr;
+}
+
+.daily-tasks-card {
+  margin-top: 30px;
+}
+
+@media (max-width: 1080px) {
+  .auth-page {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-hero {
+    min-height: 46vh;
+  }
+}
 
 @media (max-width: 900px) {
-  .bottom-grid {
+  .bottom-grid,
+  .goal-todo-grid {
     grid-template-columns: 1fr;
   }
 
@@ -41,21 +794,193 @@ body {
   }
 }
 
+@media (max-width: 720px) {
+  .auth-page {
+    padding: 16px;
+  }
 
-/* App.css */
+  .auth-hero,
+  .auth-card {
+    padding: 18px;
+  }
 
-.goal-todo-grid {
-  margin-top: 30px;
-
-  display: grid;
-
-  grid-template-columns: 1fr 1fr;
-
-  gap: 30px;
+  .session-bar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }
 
-@media (max-width: 900px) {
-  .goal-todo-grid {
-    grid-template-columns: 1fr;
-  }
+.dashboard .clock-time,
+.dashboard .countdown-title,
+.dashboard .title,
+.dashboard .goal-header h1,
+.dashboard .daily-tasks-card h1,
+.dashboard .dt-section-heading h3,
+.dashboard .drinkwater-card h1 {
+  color: var(--text-main);
+}
+
+.dashboard .clock-date,
+.dashboard .status,
+.dashboard .sessions,
+.dashboard .progress-text,
+.dashboard .box p,
+.dashboard .timer-boxes span,
+.dashboard .goal-date,
+.dashboard .empty-state,
+.dashboard .dt-kicker,
+.dashboard .task-type,
+.dashboard .day-date,
+.dashboard .drinkwater-card h3,
+.dashboard .footer {
+  color: var(--text-muted);
+}
+
+.dashboard .countdown-card,
+.dashboard .pomodoro-card,
+.dashboard .drinkwater-card,
+.dashboard .goal-card-face,
+.dashboard .daily-tasks-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.06)),
+    var(--panel-bg);
+  box-shadow:
+    0 18px 50px var(--shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(22px) saturate(1.2);
+  -webkit-backdrop-filter: blur(22px) saturate(1.2);
+}
+
+.dashboard .countdown-card::before,
+.dashboard .pomodoro-card::before,
+.dashboard .drinkwater-card::before,
+.dashboard .goal-card-face::before,
+.dashboard .daily-tasks-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.32), transparent 36%),
+    linear-gradient(315deg, rgba(255, 255, 255, 0.1), transparent 30%);
+  opacity: 0.62;
+}
+
+.dashboard .countdown-card > *,
+.dashboard .pomodoro-card > *,
+.dashboard .drinkwater-card > *,
+.dashboard .goal-card-face > *,
+.dashboard .daily-tasks-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.dashboard .box,
+.dashboard .goal-item,
+.dashboard .input-box input,
+.dashboard .custom-mode input,
+.dashboard .glass-input input,
+.dashboard .cup,
+.dashboard .cup-small,
+.dashboard .dt-task,
+.dashboard .dt-calendar-day,
+.dashboard .dt-date-menu,
+.dashboard .mode-button,
+.dashboard .calendar-switch button,
+.dashboard .dt-refresh-btn {
+  border-color: var(--border);
+  background: var(--panel-strong);
+  color: var(--text-main);
+}
+
+.dashboard .dt-today-section,
+.dashboard .dt-calendar-section {
+  border-color: var(--border);
+  background: var(--panel-soft);
+}
+
+.dashboard .countdown-title span,
+.dashboard .box h2,
+.dashboard .timer-editor select,
+.dashboard .timer-editor span,
+.dashboard .sessions span,
+.dashboard .countdown,
+.dashboard .dt-header .streak,
+.dashboard .completion-info {
+  color: var(--accent);
+}
+
+.dashboard .progress,
+.dashboard .start,
+.dashboard .custom-mode button,
+.dashboard .glass-input button,
+.dashboard .dt-icon,
+.dashboard .dt-add-btn,
+.dashboard .mode-button.active,
+.dashboard .calendar-switch .active,
+.dashboard .dt-calendar-day.today,
+.dashboard .goal-btn {
+  background: var(--accent-2);
+  color: #fff;
+}
+
+.dashboard .progress-bar,
+.dashboard .pause,
+.dashboard .completion-info,
+.dashboard .dt-section-heading > span {
+  background: var(--accent-soft);
+}
+
+.dashboard .dt-calendar-day.today {
+  border-color: var(--accent-2);
+}
+
+.dashboard .mode-button.active,
+.dashboard .calendar-switch .active {
+  border-color: var(--accent-2);
+}
+
+.dashboard .input-box input:focus {
+  border-color: var(--accent-2);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.dashboard .dt-task {
+  border-left-color: var(--accent);
+}
+
+.dashboard .dt-task.completed {
+  border-left-color: var(--accent-2);
+}
+
+.dashboard .dt-task input[type="checkbox"],
+.dashboard .preview-task input[type="checkbox"] {
+  accent-color: var(--accent-2);
+}
+
+.dashboard .secondary {
+  border-color: var(--accent-2);
+  background: var(--panel-strong);
+  color: var(--accent-2);
+}
+
+.dashboard .cup,
+.dashboard .cup-small {
+  border-color: var(--accent-2);
+}
+
+.dashboard .percentage,
+.dashboard .cup-small.full {
+  background: var(--accent);
+}
+
+.dashboard .footer {
+  border-top-color: var(--border);
 }

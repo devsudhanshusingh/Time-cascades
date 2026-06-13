@@ -1,6 +1,6 @@
 // GoalCard.jsx
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import "./GoalCard.css";
 
@@ -9,7 +9,7 @@ const GoalCard = () => {
   const [date, setDate] = useState("");
   const [goals, setGoals] = useState([]);
   const [showGoals, setShowGoals] = useState(false);
-  const [tick, setTick] = useState(0);
+  const [, setTick] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -56,7 +56,8 @@ const GoalCard = () => {
   };
 
   useEffect(() => {
-    fetchGoals();
+    const timer = setTimeout(fetchGoals, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const addGoal = async () => {
