@@ -2,64 +2,35 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import api from "../../api";
 import "./DailyTasks.css";
 
-const completionStorageKey = "timeCascadesDailyTaskCompletions";
 const taskModes = ["Daily", "Weekly", "Monthly", "Yearly"];
+
 const calendarModes = ["Day", "Week", "Month", "Year"];
 
-const dateKey = (date = new Date()) => date.toISOString().split("T")[0];
-const getTaskId = (task) => task?._id || task?.id;
-
-const readStoredCompletions = () => {
-  try {
-    return JSON.parse(localStorage.getItem(completionStorageKey)) || {};
-  } catch {
-    return {};
-  }
-};
-
-const parseTaskStart = (task) => {
-  if (!task?.completionDate) return new Date();
-
-  if (task.type === "Yearly") {
-    return new Date(Number(task.completionDate), 0, 1);
-  }
-
-  if (task.type === "Monthly") {
-    return new Date(`${task.completionDate}-01`);
-  }
-
-  if (task.type === "Weekly") {
-    const [year, week] = String(task.completionDate).split("-W");
-    const weekStart = new Date(Number(year), 0, 1);
-    weekStart.setDate(weekStart.getDate() + (Number(week || 1) - 1) * 7);
-    return weekStart;
-  }
-
-  return new Date(task.completionDate);
-};
+const dateKey = (date = new Date()) =>
+  new Date(date).toISOString().split("T")[0];
 
 const DailyTasks = () => {
   const [tasks, setTasks] = useState([]);
+
   const [taskText, setTaskText] = useState("");
+
   const [taskType, setTaskType] = useState("Daily");
+
   const [calendarMode, setCalendarMode] = useState("Day");
-  const [hoveredDate, setHoveredDate] = useState(null);
-  const [completions, setCompletions] = useState(readStoredCompletions);
+
   const [loading, setLoading] = useState(false);
+
   const [error, setError] = useState("");
 
   const fetchTasks = useCallback(async () => {
-    setLoading(true);
-    setError("");
-
     try {
+      setLoading(true);
+
       const res = await api.get("/api/todos");
-      setTasks(Array.isArray(res.data) ? res.data : []);
+
+      setTasks(res.data || []);
     } catch (err) {
-      setError(
-        err?.response?.data?.message ||
-          "Could not load daily tasks. Please refresh after login.",
-      );
+      setError(err?.response?.data?.message || "Unable to load tasks");
     } finally {
       setLoading(false);
     }
@@ -70,162 +41,148 @@ const DailyTasks = () => {
     return () => clearTimeout(timer);
   }, [fetchTasks]);
 
-  useEffect(() => {
-    localStorage.setItem(completionStorageKey, JSON.stringify(completions));
-  }, [completions]);
+  // today's selected tasks
 
-  const isTaskRelevantForDate = useCallback((task, targetDate) => {
-    const start = parseTaskStart(task);
-    const date = new Date(targetDate);
+  const visibleTasks = useMemo(() => {
+    return tasks.filter(
+      (task) =>
+        task.type === taskType && dateKey(task.completionDate) === dateKey(),
+    );
+  }, [tasks, taskType]);
 
-    if (Number.isNaN(start.getTime()) || date < start) return false;
-    if (task.type === "Daily") return true;
-    if (task.type === "Weekly") return start.getDay() === date.getDay();
-    if (task.type === "Monthly") return start.getDate() === date.getDate();
-
-    if (task.type === "Yearly") {
-      return (
-        start.getDate() === date.getDate() &&
-        start.getMonth() === date.getMonth()
-      );
-    }
-
-    return false;
-  }, []);
-
-  const visibleTasks = useMemo(
-    () =>
-      tasks.filter(
-        (task) => task.type === taskType && isTaskRelevantForDate(task, new Date()),
-      ),
-    [isTaskRelevantForDate, taskType, tasks],
-  );
-
-  const completedToday = useMemo(() => {
-    const today = dateKey();
-    const completedIds = completions[today] || [];
-    return visibleTasks.filter((task) => completedIds.includes(getTaskId(task))).length;
-  }, [completions, visibleTasks]);
+  const completedToday = visibleTasks.filter((task) => task.completed).length;
 
   const streak = useMemo(() => {
     let count = 0;
-    const cursor = new Date();
 
-    for (let i = 0; i < 365; i++) {
-      const key = dateKey(cursor);
+    let current = new Date();
+
+    while (true) {
+      const key = dateKey(current);
+
       const dayTasks = tasks.filter(
-        (task) => task.type === taskType && isTaskRelevantForDate(task, cursor),
+        (task) =>
+          task.type === taskType && dateKey(task.completionDate) === key,
       );
-      const completedIds = completions[key] || [];
 
-      if (
-        dayTasks.length > 0 &&
-        dayTasks.every((task) => completedIds.includes(getTaskId(task)))
-      ) {
-        count += 1;
-        cursor.setDate(cursor.getDate() - 1);
+      if (dayTasks.length && dayTasks.every((task) => task.completed)) {
+        count++;
+
+        current.setDate(current.getDate() - 1);
       } else {
         break;
       }
     }
 
     return count;
-  }, [completions, isTaskRelevantForDate, taskType, tasks]);
+  }, [tasks, taskType]);
 
   const addTask = async () => {
     const text = taskText.trim();
+
     if (!text) return;
 
-    setLoading(true);
-    setError("");
-
     try {
+      setLoading(true);
+
       const res = await api.post("/api/todos", {
         text,
+
         type: taskType,
+
         completionDate: dateKey(),
       });
 
-      setTasks((current) => [res.data, ...current]);
+      setTasks((prev) => [res.data, ...prev]);
+
       setTaskText("");
     } catch (err) {
-      setError(err?.response?.data?.message || "Could not create task.");
+      setError(err?.response?.data?.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const toggleCompletion = (id, targetDate) => {
-    setCompletions((current) => {
-      const old = current[targetDate] || [];
-      const nextForDate = old.includes(id)
-        ? old.filter((taskId) => taskId !== id)
-        : [...old, id];
+  const toggleCompletion = async (task) => {
+    try {
+      await api.put(`/api/todos/complete/${task._id}`);
 
-      return {
-        ...current,
-        [targetDate]: nextForDate,
-      };
-    });
+      await fetchTasks();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const getCalendarItems = () => {
-    const items = [];
-    const now = new Date();
-    const total =
-      calendarMode === "Day" ? 30 : calendarMode === "Week" ? 12 : calendarMode === "Month" ? 12 : 10;
+    let arr = [];
 
-    for (let index = 0; index < total; index++) {
-      const date = new Date(now);
+    let now = new Date();
 
-      if (calendarMode === "Day") date.setDate(now.getDate() + index);
-      if (calendarMode === "Week") date.setDate(now.getDate() + index * 7);
-      if (calendarMode === "Month") date.setMonth(now.getMonth() + index, 1);
-      if (calendarMode === "Year") date.setFullYear(now.getFullYear() + index, 0, 1);
+    let total =
+      calendarMode === "Day"
+        ? 30
+        : calendarMode === "Week"
+          ? 12
+          : calendarMode === "Month"
+            ? 12
+            : 10;
 
-      items.push(date);
+    for (let i = 0; i < total; i++) {
+      let d = new Date(now);
+
+      if (calendarMode === "Day") d.setDate(now.getDate() + i);
+
+      if (calendarMode === "Week") d.setDate(now.getDate() + i * 7);
+
+      if (calendarMode === "Month") d.setMonth(now.getMonth() + i);
+
+      if (calendarMode === "Year") d.setFullYear(now.getFullYear() + i);
+
+      arr.push(d);
     }
 
-    return items;
+    return arr;
   };
 
-  const getCompletion = (targetDate) => {
-    const key = dateKey(targetDate);
-    const completed = completions[key] || [];
-    const filteredTasks = tasks.filter(
-      (task) => task.type === taskType && isTaskRelevantForDate(task, targetDate),
+  const getCalendarData = (date) => {
+    const key = dateKey(date);
+
+    const dayTasks = tasks.filter(
+      (task) => task.type === taskType && dateKey(task.completionDate) === key,
     );
 
     return {
-      completed: filteredTasks.filter((task) => completed.includes(getTaskId(task))).length,
-      total: filteredTasks.length,
+      total: dayTasks.length,
+
+      completed: dayTasks.filter((task) => task.completed).length,
     };
   };
 
   return (
     <section className="daily-tasks-card">
       <div className="dt-header">
-        <div className="dt-icon" aria-hidden="true">
-          ✓
-        </div>
+        <div className="dt-icon">✓</div>
+
         <div>
-          <p className="dt-kicker">Authenticated todos</p>
           <h1>Daily Tasks</h1>
-          <p className="streak">Current streak: {streak} days</p>
+
+          <p className="streak">Streak: {streak} days</p>
         </div>
-        <button className="dt-refresh-btn" onClick={fetchTasks} disabled={loading}>
+
+        <button className="dt-refresh-btn" onClick={fetchTasks}>
           Refresh
         </button>
       </div>
 
       <div className="dt-form">
-        <div className="mode-buttons" aria-label="Task frequency">
+        <div className="mode-buttons">
           {taskModes.map((mode) => (
             <button
               key={mode}
-              className={taskType === mode ? "mode-button active" : "mode-button"}
+              className={
+                taskType === mode ? "mode-button active" : "mode-button"
+              }
               onClick={() => setTaskType(mode)}
-              type="button"
             >
               {mode}
             </button>
@@ -234,13 +191,11 @@ const DailyTasks = () => {
 
         <div className="dt-add-row">
           <div className="input-box">
-            <span className="input-icon">✎</span>
             <input
               placeholder="Enter task..."
               value={taskText}
-              onChange={(event) => setTaskText(event.target.value)}
-              onKeyDown={(event) => event.key === "Enter" && addTask()}
-              disabled={loading}
+              onChange={(e) => setTaskText(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && addTask()}
             />
           </div>
 
@@ -255,52 +210,45 @@ const DailyTasks = () => {
       <div className="dt-content-grid">
         <div className="dt-today-section">
           <div className="dt-section-heading">
-            <h3>Today</h3>
+            <h3>{taskType}</h3>
+
             <span>
               {completedToday}/{visibleTasks.length}
             </span>
           </div>
 
           <div className="dt-tasks-list">
-            {visibleTasks.length ? (
-              visibleTasks.map((task) => {
-                const id = getTaskId(task);
-                const today = dateKey();
-                const done = (completions[today] || []).includes(id);
+            {visibleTasks.map((task) => (
+              <label
+                key={task._id}
+                className={task.completed ? "dt-task completed" : "dt-task"}
+              >
+                <input
+                  type="checkbox"
+                  checked={task.completed}
+                  onChange={() => toggleCompletion(task)}
+                />
 
-                return (
-                  <label key={id} className={done ? "dt-task completed" : "dt-task"}>
-                    <input
-                      type="checkbox"
-                      checked={done}
-                      onChange={() => toggleCompletion(id, today)}
-                      disabled={loading}
-                    />
-                    <div>
-                      <span>{task.text || task.title || "Untitled task"}</span>
-                      <p className="task-type">{task.type || "Daily"}</p>
-                    </div>
-                  </label>
-                );
-              })
-            ) : (
-              <div className="empty-state">
-                {loading ? "Loading tasks..." : "No tasks for today"}
-              </div>
-            )}
+                <div>
+                  <span>{task.text}</span>
+
+                  <p className="task-type">{task.type}</p>
+                </div>
+              </label>
+            ))}
           </div>
         </div>
 
         <div className="dt-calendar-section">
           <div className="dt-section-heading">
             <h3>Calendar</h3>
+
             <div className="calendar-switch">
               {calendarModes.map((mode) => (
                 <button
                   key={mode}
                   className={calendarMode === mode ? "active" : ""}
                   onClick={() => setCalendarMode(mode)}
-                  type="button"
                 >
                   {mode}
                 </button>
@@ -310,51 +258,15 @@ const DailyTasks = () => {
 
           <div className="dt-calendar">
             {getCalendarItems().map((date) => {
-              const key = dateKey(date);
-              const data = getCompletion(date);
-              const isToday = key === dateKey();
-              const dayTasks = tasks.filter(
-                (task) => task.type === taskType && isTaskRelevantForDate(task, date),
-              );
+              const data = getCalendarData(date);
 
               return (
-                <div
-                  key={key}
-                  className={`dt-calendar-day ${isToday ? "today" : ""}`}
-                  onMouseEnter={() => setHoveredDate(key)}
-                  onMouseLeave={() => setHoveredDate(null)}
-                >
-                  <span className="day-date">
-                    {date.toLocaleDateString("en-US", {
-                      day: calendarMode === "Year" ? undefined : "2-digit",
-                      month: calendarMode === "Day" || calendarMode === "Week" ? "short" : "short",
-                      year: calendarMode === "Year" ? "numeric" : undefined,
-                      weekday: calendarMode === "Day" || calendarMode === "Week" ? "short" : undefined,
-                    })}
-                  </span>
+                <div key={dateKey(date)} className="dt-calendar-day">
+                  <span className="day-date">{date.toDateString()}</span>
+
                   <span className="completion-info">
                     {data.completed}/{data.total}
                   </span>
-
-                  {hoveredDate === key && dayTasks.length > 0 && (
-                    <div className="dt-date-menu">
-                      {dayTasks.map((task) => {
-                        const id = getTaskId(task);
-                        const isCompleted = (completions[key] || []).includes(id);
-
-                        return (
-                          <label key={id} className="preview-task">
-                            <input
-                              type="checkbox"
-                              checked={isCompleted}
-                              onChange={() => toggleCompletion(id, key)}
-                            />
-                            <span>{task.text || task.title || "Untitled task"}</span>
-                          </label>
-                        );
-                      })}
-                    </div>
-                  )}
                 </div>
               );
             })}
