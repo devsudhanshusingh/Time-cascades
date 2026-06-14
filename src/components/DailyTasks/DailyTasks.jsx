@@ -6,6 +6,23 @@ const taskModes = ["Daily", "Weekly", "Monthly", "Yearly"];
 
 const calendarModes = ["Day", "Week", "Month", "Year"];
 
+const EditIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M4 20h4l10.5-10.5-4-4L4 16v4Z" />
+    <path d="m13.5 6.5 4 4" />
+  </svg>
+);
+
+const DeleteIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M5 7h14" />
+    <path d="M10 11v6" />
+    <path d="M14 11v6" />
+    <path d="M6 7l1 13h10l1-13" />
+    <path d="M9 7V4h6v3" />
+  </svg>
+);
+
 const dateKey = (date = new Date()) => {
   const d = new Date(date);
 
@@ -161,10 +178,22 @@ const DailyTasks = () => {
       await api.post("/api/todos/copy", {
         type: taskType,
       });
+
+      await fetchTasks();
     } catch (err) {
       setError(err?.response?.data?.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const toggleCompletion = async (task) => {
+    try {
+      await api.put(`/api/todos/complete/${task._id}`);
+
+      await fetchTasks();
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -198,6 +227,98 @@ const DailyTasks = () => {
   const MIN_YEAR = 2026;
   const MIN_MONTH = 5; // June
 
+  const getWeekRange = (date) => {
+    const monday = new Date(date);
+    const day = monday.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+
+    monday.setDate(monday.getDate() + diff);
+    monday.setHours(0, 0, 0, 0);
+
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    sunday.setHours(23, 59, 59, 999);
+
+    return { monday, sunday };
+  };
+
+  const isSameCalendarPeriod = (date, selected) => {
+    const taskDate = new Date(date);
+    const selectedDay = new Date(selected);
+
+    if (calendarMode === "Day") {
+      return dateKey(taskDate) === dateKey(selectedDay);
+    }
+
+    if (calendarMode === "Week") {
+      const taskWeek = getWeekRange(taskDate);
+      const selectedWeek = getWeekRange(selectedDay);
+
+      return dateKey(taskWeek.monday) === dateKey(selectedWeek.monday);
+    }
+
+    if (calendarMode === "Month") {
+      return (
+        taskDate.getMonth() === selectedDay.getMonth() &&
+        taskDate.getFullYear() === selectedDay.getFullYear()
+      );
+    }
+
+    if (calendarMode === "Year") {
+      return taskDate.getFullYear() === selectedDay.getFullYear();
+    }
+
+    return false;
+  };
+
+  const getCompletionClass = ({ completed, total }) => {
+    if (!total || !completed) return "";
+
+    const percent = completed / total;
+
+    if (percent === 1) return "complete-done";
+    if (percent >= 0.67) return "complete-high";
+    if (percent >= 0.34) return "complete-mid";
+
+    return "complete-low";
+  };
+
+  const formatCalendarLabel = (date) => {
+    if (calendarMode === "Day") return date.getDate();
+
+    if (calendarMode === "Week") {
+      const { monday, sunday } = getWeekRange(date);
+
+      return `${monday.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      })} - ${sunday.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      })}`;
+    }
+
+    if (calendarMode === "Month") {
+      return date.toLocaleDateString("en-US", { month: "short" });
+    }
+
+    return date.getFullYear();
+  };
+
+  const getCalendarTitle = () => {
+    if (calendarMode === "Day" || calendarMode === "Week") {
+      const visibleDate = new Date();
+      visibleDate.setMonth(visibleDate.getMonth() + calendarOffset);
+
+      return visibleDate.toLocaleDateString("en-US", {
+        month: "long",
+        year: "numeric",
+      });
+    }
+
+    return "Calendar";
+  };
+
   const getCalendarItems = () => {
     const arr = [];
     const baseDate = new Date();
@@ -229,19 +350,19 @@ const DailyTasks = () => {
 
     // WEEK (Monday → Sunday)
     if (calendarMode === "Week") {
-      const today = new Date();
-      today.setDate(today.getDate() + calendarOffset * 7);
+      baseDate.setMonth(baseDate.getMonth() + calendarOffset);
 
-      const day = today.getDay();
-      const diff = day === 0 ? -6 : 1 - day;
+      const year = baseDate.getFullYear();
+      const month = baseDate.getMonth();
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      const { monday } = getWeekRange(firstDay);
 
-      const monday = new Date(today);
-      monday.setDate(today.getDate() + diff);
+      let currentWeek = new Date(monday);
 
-      for (let i = 0; i < 7; i++) {
-        const d = new Date(monday);
-        d.setDate(monday.getDate() + i);
-        arr.push(d);
+      while (currentWeek <= lastDay) {
+        arr.push(new Date(currentWeek));
+        currentWeek.setDate(currentWeek.getDate() + 7);
       }
     }
 
@@ -265,16 +386,16 @@ const DailyTasks = () => {
   };
 
   const getCalendarData = (date) => {
-    const key = dateKey(date);
-
-    const dayTasks = tasks.filter(
-      (task) => task.type === taskType && dateKey(task.completionDate) === key,
+    const calendarTasks = tasks.filter(
+      (task) =>
+        task.type === taskType &&
+        isSameCalendarPeriod(task.completionDate, date),
     );
 
     return {
-      total: dayTasks.length,
+      total: calendarTasks.length,
 
-      completed: dayTasks.filter((task) => task.completed).length,
+      completed: calendarTasks.filter((task) => task.completed).length,
     };
   };
 
@@ -388,16 +509,26 @@ const DailyTasks = () => {
                   ) : (
                     <>
                       <button
+                        className="task-icon-btn"
+                        type="button"
+                        title="Edit task"
+                        aria-label={`Edit ${task.text}`}
                         onClick={() => {
                           setEditingTaskId(task._id);
                           setEditText(task.text);
                         }}
                       >
-                        Edit
+                        <EditIcon />
                       </button>
 
-                      <button onClick={() => deleteTask(task._id)}>
-                        Delete
+                      <button
+                        className="task-icon-btn danger"
+                        type="button"
+                        title="Delete task"
+                        aria-label={`Delete ${task.text}`}
+                        onClick={() => deleteTask(task._id)}
+                      >
+                        <DeleteIcon />
                       </button>
                     </>
                   )}
@@ -432,7 +563,7 @@ const DailyTasks = () => {
                 ←
               </button>
 
-              <h3>Calendar</h3>
+              <h3>{getCalendarTitle()}</h3>
 
               <button onClick={() => setCalendarOffset((prev) => prev + 1)}>
                 →
@@ -444,7 +575,10 @@ const DailyTasks = () => {
                 <button
                   key={mode}
                   className={calendarMode === mode ? "active" : ""}
-                  onClick={() => setCalendarMode(mode)}
+                  onClick={() => {
+                    setCalendarMode(mode);
+                    setCalendarOffset(0);
+                  }}
                 >
                   {mode}
                 </button>
@@ -462,7 +596,7 @@ const DailyTasks = () => {
               <span>Sun</span>
             </div>
           )}
-          <div className="dt-calendar">
+          <div className={`dt-calendar ${calendarMode.toLowerCase()}-calendar`}>
             {getCalendarItems().map((date, index) => {
               if (!date) {
                 return (
@@ -473,51 +607,29 @@ const DailyTasks = () => {
                 );
               }
               const data = getCalendarData(date);
+              const completionTitle = `${data.completed}/${data.total} completed`;
+              const cellClassName = [
+                "dt-calendar-day",
+                isSameCalendarPeriod(date, selectedDate) ? "active" : "",
+                getCompletionClass(data),
+              ]
+                .filter(Boolean)
+                .join(" ");
 
               return (
                 <div
                   key={dateKey(date)}
-                  className={
-                    dateKey(date) === dateKey(selectedDate)
-                      ? "dt-calendar-day active"
-                      : "dt-calendar-day"
-                  }
+                  title={completionTitle}
+                  className={cellClassName}
                   onClick={() => setSelectedDate(date)}
                 >
-                  <span className="day-date">
-                    {calendarMode === "Day" &&
-                      date.toLocaleDateString("en-US", {
-                        weekday: "short",
-                        day: "numeric",
-                        month: "short",
-                      })}
+                  <span className="day-date">{formatCalendarLabel(date)}</span>
 
-                    {calendarMode === "Week" &&
-                      (() => {
-                        const monday = new Date(date);
-                        const day = monday.getDay();
-                        const diff = day === 0 ? -6 : 1 - day;
-
-                        monday.setDate(monday.getDate() + diff);
-
-                        const sunday = new Date(monday);
-                        sunday.setDate(monday.getDate() + 6);
-
-                        return `${monday.toLocaleDateString()} - ${sunday.toLocaleDateString()}`;
-                      })()}
-
-                    {calendarMode === "Month" &&
-                      date.toLocaleDateString("en-US", {
-                        month: "long",
-                        year: "numeric",
-                      })}
-
-                    {calendarMode === "Year" && date.getFullYear()}
-                  </span>
-
-                  <span className="completion-info">
-                    {data.completed}/{data.total}
-                  </span>
+                  {data.total > 0 && (
+                    <span className="completion-count">
+                      {data.completed}/{data.total}
+                    </span>
+                  )}
                 </div>
               );
             })}
