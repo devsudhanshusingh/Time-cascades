@@ -7,8 +7,22 @@ export const authStorageKey = "timeCascadesAuth";
 
 export const getStoredAuth = () => {
   try {
-    return JSON.parse(localStorage.getItem(authStorageKey)) || null;
+    const raw = localStorage.getItem(authStorageKey);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (typeof parsed === "string") return { token: parsed };
+      if (parsed?.token || parsed?.accessToken) {
+        return { token: parsed.token || parsed.accessToken, user: parsed.user };
+      }
+    }
+
+    const altToken = localStorage.getItem("token") || localStorage.getItem("authToken");
+    if (altToken) return { token: altToken };
+
+    return null;
   } catch {
+    const altToken = localStorage.getItem("token") || localStorage.getItem("authToken");
+    if (altToken) return { token: altToken };
     return null;
   }
 };
@@ -19,6 +33,8 @@ export const setStoredAuth = (auth) => {
 
 export const clearStoredAuth = () => {
   localStorage.removeItem(authStorageKey);
+  localStorage.removeItem("token");
+  localStorage.removeItem("authToken");
 };
 
 const api = axios.create({
@@ -35,5 +51,15 @@ api.interceptors.request.use((config) => {
 
   return config;
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      console.warn("Unauthorized API access (401). Invalid or expired JWT token.");
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default api;
