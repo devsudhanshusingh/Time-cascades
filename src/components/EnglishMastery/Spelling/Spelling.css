@@ -1,0 +1,432 @@
+.spelling-container {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* HEADER CARD */
+
+.spelling-header-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 28px 32px;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(99, 102, 241, 0.15), transparent 28rem),
+    var(--panel-bg);
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 45px var(--shadow);
+  backdrop-filter: blur(20px);
+}
+
+.spelling-kicker {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--accent-2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.spelling-header-card h2 {
+  margin: 4px 0 0 0;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.spelling-header-card p {
+  margin-top: 4px;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+/* TRAINER GRID */
+
+.spelling-trainer-grid {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 28px;
+}
+
+.spelling-word-card,
+.spelling-canvas-card {
+  padding: 32px;
+  border-radius: 24px;
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 45px var(--shadow);
+  backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.word-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.diff-badge {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+}
+
+.audio-speak-btn {
+  padding: 6px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel-strong);
+  color: var(--text-main);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.target-word-display {
+  margin: 24px 0 12px 0;
+  text-align: center;
+}
+
+.target-word-display h2 {
+  margin: 0;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: 0.02em;
+}
+
+.phonetic-text {
+  display: block;
+  margin-top: 4px;
+  font-size: 1.1rem;
+  color: var(--text-muted);
+}
+
+.word-meaning {
+  text-align: center;
+  font-size: 0.98rem;
+  color: var(--text-main);
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+/* REPETITION BAR */
+
+.rep-counter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--panel-soft);
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+
+.rep-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.rep-track {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--panel-strong);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.rep-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.target-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.target-num-btn {
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--panel-strong);
+  color: var(--text-main);
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.target-num-btn.active {
+  background: var(--accent-2);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+/* CANVAS CARD & WPM METRICS */
+
+.wpm-metrics-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.wpm-metric-box {
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+.wpm-num {
+  display: block;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--accent-2);
+  line-height: 1;
+}
+
+.wpm-lbl {
+  margin-top: 4px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+/* LETTER HIGHLIGHT DISPLAY */
+
+.letter-highlight-display {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.char-box {
+  width: 44px;
+  height: 52px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  background: var(--panel-strong);
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  transition: all 0.15s ease;
+}
+
+.char-box.char-pending {
+  color: var(--text-muted);
+}
+
+.char-box.char-correct {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.char-box.char-incorrect {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  color: #ef4444;
+  animation: charShake 0.2s ease;
+}
+
+@keyframes charShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.spelling-type-input {
+  width: 100%;
+  padding: 16px 20px;
+  border-radius: 16px;
+  border: 2px solid var(--accent-2);
+  background: var(--panel-strong);
+  color: var(--text-main);
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-align: center;
+  outline: none;
+  box-shadow: 0 4px 14px var(--accent-soft);
+  margin-bottom: 24px;
+}
+
+.spelling-controls-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* ADD MODAL & CSV */
+
+.spelling-add-modal {
+  max-width: 650px;
+}
+
+.modal-tab-header {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+}
+
+.modal-tab-btn {
+  padding: 8px 18px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.modal-tab-btn.active {
+  background: var(--accent-2);
+  color: #ffffff;
+}
+
+.csv-upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.csv-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px;
+  border: 2px dashed var(--border);
+  border-radius: 20px;
+  background: var(--panel-soft);
+  text-align: center;
+}
+
+.csv-icon {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+}
+
+.csv-dropzone h4 {
+  margin: 0;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.csv-dropzone p {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.csv-file-input {
+  display: none;
+}
+
+.csv-btn {
+  margin-top: 16px;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.csv-file-name {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent-2);
+}
+
+.csv-preview-table-wrap h4 {
+  margin: 0 0 10px 0;
+  font-size: 0.95rem;
+  color: var(--text-main);
+}
+
+.csv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+  text-align: left;
+}
+
+.csv-table th,
+.csv-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.more-preview-text {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .spelling-trainer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .spelling-word-card,
+  .spelling-canvas-card {
+    padding: 20px 16px;
+  }
+
+  .char-box {
+    width: 34px;
+    height: 42px;
+    font-size: 1.25rem;
+    border-radius: 8px;
+  }
+
+  .spelling-type-input {
+    font-size: 1.1rem;
+    padding: 12px 14px;
+  }
+
+  .wpm-metrics-row {
+    gap: 8px;
+  }
+
+  .wpm-metric-box {
+    padding: 10px 8px;
+  }
+
+  .wpm-num {
+    font-size: 1.4rem;
+  }
+}

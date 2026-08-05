@@ -1,234 +1,257 @@
-/* Pomodoro.css */
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  background: #ececec;
-  font-family: "Poppins", sans-serif;
-}
-
 .pomodoro-container {
   width: 100%;
+  height: 100%;
   display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .pomodoro-card {
   width: 100%;
-  max-width: 600px; /* increased size slightly */
-  background: #f4f4f4;
-  border-radius: 22px;
-  padding: 35px;
+  height: 100%;
+  min-height: 520px;
+  border-radius: 24px;
+  padding: 36px 28px;
   text-align: center;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border);
+  background: var(--panel-bg);
+  box-shadow: 0 20px 45px var(--shadow);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1f1f1f;
+  font-family: "Plus Jakarta Sans", var(--heading);
+  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  font-weight: 800;
+  color: var(--text-main);
 }
 
 .status {
-  margin-top: 15px;
-  font-size: 1.4rem;
-  color: #6b7280;
+  margin-top: 8px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
-/* Timer + Input */
+/* TIMER & INPUT BOXES */
 
 .timer-editor {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  margin: 35px 0;
+  gap: 12px;
+  margin: 20px 0;
 }
 
-.timer-editor select {
+.timer-input-box {
+  width: min(96px, 24vw);
+  height: 84px;
+  border: 1.5px solid var(--border);
+  background: var(--panel-strong);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px var(--shadow);
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.timer-input-box:focus-within,
+.timer-input-box:hover {
+  border-color: var(--accent-2);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.timer-input-box input {
+  width: 100%;
+  height: 100%;
   border: none;
   background: transparent;
-  appearance: none;
-
-  width: 95px;
-
-  font-size: 4.2rem;
-  font-weight: 700;
-  color: #87b6cc;
-
+  color: var(--accent);
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-weight: 800;
   text-align: center;
   outline: none;
+  padding: 0;
+  margin: 0;
+  line-height: 84px;
   cursor: pointer;
+
+  /* Hide number arrows */
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
 
-.timer-editor span {
-  font-size: 4rem;
-  font-weight: 700;
-  color: #87b6cc;
+.timer-input-box input::-webkit-outer-spin-button,
+.timer-input-box input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
-.timer-editor select:disabled {
-  opacity: 1;
-  cursor: not-allowed;
+.timer-editor .colon {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
 }
 
-/* Buttons */
+/* BUTTONS */
 
 .buttons {
-  margin-top: 30px;
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-.buttons button {
-  border: none;
-  padding: 14px 32px;
-  border-radius: 14px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.start {
-  background: #87b6cc;
-  color: white;
-}
-
-.pause {
-  background: #dddddd;
-  color: #555;
-}
-
-.reset {
-  background: #c85d6a;
-  color: white;
-}
-
-.buttons button:hover {
-  transform: translateY(-3px);
-}
-
-/* Modes */
-
-.modes {
-  margin-top: 30px;
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-.modes button {
-  padding: 12px 25px;
-  border-radius: 30px;
-  border: 2px solid #d4d4d4;
-  background: white;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.modes button:hover {
-  background: #87b6cc;
-  color: white;
-  border-color: #87b6cc;
-}
-
-.modes button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Custom mode */
-
-.custom-mode {
-  margin-top: 30px;
+  margin-top: 16px;
   display: flex;
   justify-content: center;
   gap: 12px;
   flex-wrap: wrap;
 }
 
-.custom-mode input {
-  padding: 12px 16px;
-  border-radius: 10px;
-  border: 1px solid #d1d5db;
-  outline: none;
-  font-size: 1rem;
-}
-
-.custom-mode input:disabled {
-  background: #e5e7eb;
-}
-
-.custom-mode button {
-  padding: 12px 22px;
+.buttons button {
   border: none;
-  border-radius: 10px;
-  background: #87b6cc;
-  color: white;
+  padding: 12px 28px;
+  border-radius: 12px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
   cursor: pointer;
-  font-size: 1rem;
+  transition: all 0.2s ease;
 }
 
-.custom-mode button:disabled {
-  opacity: 0.6;
+.start {
+  background: var(--accent-2);
+  color: #ffffff;
+  box-shadow: 0 4px 14px var(--accent-soft);
+}
+
+.start:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+}
+
+.pause {
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+}
+
+.pause:hover {
+  transform: translateY(-2px);
+  background: var(--panel-soft);
+}
+
+.reset {
+  background: rgba(220, 38, 38, 0.15);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  color: #ef4444;
+}
+
+.reset:hover {
+  transform: translateY(-2px);
+  background: rgba(220, 38, 38, 0.25);
+}
+
+/* MODES */
+
+.modes {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.modes button {
+  padding: 8px 20px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--panel-strong);
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modes button:hover,
+.modes button.active {
+  background: var(--accent-2);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.modes button:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* Sessions */
+/* CUSTOM MODE */
+
+.custom-mode {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.custom-mode input {
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--panel-strong);
+  color: var(--text-main);
+  outline: none;
+  font-size: 0.9rem;
+  width: clamp(160px, 40vw, 240px);
+}
+
+.custom-mode input:focus {
+  border-color: var(--accent-2);
+}
+
+.custom-mode button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 12px;
+  background: var(--accent-2);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+/* SESSIONS */
 
 .sessions {
-  margin-top: 35px;
-  font-size: 1.3rem;
-  color: #6b7280;
+  margin-top: 16px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
 .sessions span {
-  color: #87b6cc;
-  font-weight: 700;
+  color: var(--accent);
+  font-weight: 800;
 }
 
-/* Responsive */
-
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .pomodoro-card {
-    padding: 25px;
+    padding: 24px 16px;
+    min-height: auto;
   }
 
-  .title {
-    font-size: 1.7rem;
+  .timer-input-box {
+    width: 72px;
+    height: 72px;
   }
 
-  .timer-editor select,
-  .timer-editor span {
-    font-size: 2.5rem;
+  .timer-input-box input {
+    line-height: 72px;
+    font-size: 2rem;
   }
 
-  .timer-editor select {
-    width: 65px;
-  }
-
-  .buttons button,
-  .modes button,
-  .custom-mode button,
-  .custom-mode input {
-    width: 100%;
-  }
-
-  .status {
-    font-size: 1.1rem;
-  }
-
-  .sessions {
-    font-size: 1.1rem;
+  .buttons button {
+    padding: 10px 20px;
+    font-size: 0.88rem;
   }
 }

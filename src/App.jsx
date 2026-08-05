@@ -8,6 +8,7 @@ import DrinkWater from "./components/DrinkWater/DrinkWater";
 import Footer from "./components/Footer/Footer";
 import GoalCard from "./components/GoalCard/GoalCard";
 import DailyTasks from "./components/DailyTasks/DailyTasks";
+import EnglishMasteryContainer from "./components/EnglishMastery/EnglishMasteryContainer";
 import api, {
   API_BASE_URL,
   clearStoredAuth,
@@ -63,13 +64,14 @@ function AuthScreen({ onAuth }) {
         <div className="brand-mark">TC</div>
         <h1>Time Cascades</h1>
         <p>
-          A focused command center for tasks, pomodoros, hydration, and goals.
+          A focused command center for tasks, pomodoros, hydration, goals, and English mastery.
         </p>
         <div className="hero-metrics">
           <span>Tasks</span>
           <span>Focus</span>
           <span>Water</span>
           <span>Goals</span>
+          <span>English Mastery</span>
         </div>
       </section>
 
@@ -141,6 +143,7 @@ function AuthScreen({ onAuth }) {
 function Dashboard({ auth, onLogout }) {
   const token = auth?.token;
   const [visualMode, setVisualMode] = useState("sunny-day");
+  const [activeModule, setActiveModule] = useState("productivity");
 
   useEffect(() => {
     if (token) {
@@ -165,22 +168,36 @@ function Dashboard({ auth, onLogout }) {
         <button onClick={onLogout}>Logout</button>
       </div>
 
-      <TopBar visualMode={visualMode} onVisualModeChange={setVisualMode} />
+      <TopBar
+        visualMode={visualMode}
+        onVisualModeChange={setVisualMode}
+        userName={auth?.user?.name || auth?.user?.email?.split("@")[0] || "Rain"}
+        activeModule={activeModule}
+        onModuleChange={setActiveModule}
+      />
 
       <Clock />
+
       <div className="main-content">
-        <NewYear />
+        {activeModule === "english" ? (
+          <EnglishMasteryContainer auth={auth} />
+        ) : (
+          <>
+            <NewYear />
 
-        <div className="bottom-grid">
-          <Pomodoro />
-          <DrinkWater />
-        </div>
+            <div className="bottom-grid">
+              <Pomodoro />
+              <DrinkWater />
+            </div>
 
-        <div className="goal-todo-grid single-card">
-          <GoalCard />
-        </div>
+            <div className="goal-todo-grid single-card">
+              <GoalCard />
+            </div>
 
-        <DailyTasks />
+            <DailyTasks />
+          </>
+        )}
+
         <Footer />
       </div>
     </div>

@@ -41,38 +41,82 @@ const cards = [
 ];
 
 const visualModes = [
-  { id: "sunny-day", label: "Sunny Day", mark: "SUN" },
-  { id: "moon-night", label: "Moon Night", mark: "MOON" },
-  { id: "rainy-day", label: "Rainy Day", mark: "RAIN" },
-  { id: "rainy-night", label: "Rainy Night", mark: "STORM" },
+  { id: "sunny-day", label: "Sunny Day", mark: "☀️ SUN" },
+  { id: "moon-night", label: "Moon Night", mark: "🌙 MOON" },
+  { id: "rainy-day", label: "Rainy Day", mark: "🌧️ RAIN" },
+  { id: "rainy-night", label: "Rainy Night", mark: "⚡ STORM" },
 ];
 
-const TopBar = ({ visualMode = "sunny-day", onVisualModeChange }) => {
+const heroes = [
+  { src: sparrow, name: "Captain Jack" },
+  { src: bat, name: "Batman" },
+  { src: ham, name: "Piggy Hero" },
+  { src: iron, name: "Iron Man" },
+  { src: hulk, name: "Hulk" },
+  { src: spyder, name: "Spider-Man" },
+];
+
+const TopBar = ({
+  visualMode = "sunny-day",
+  onVisualModeChange,
+  userName = "Rain",
+  activeModule = "productivity",
+  onModuleChange,
+}) => {
   const [currentCard, setCurrentCard] = useState(0);
 
   const hour = new Date().getHours();
-
   const greeting =
     hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentCard((prev) => (prev + 1) % cards.length);
-    }, 4000);
+    }, 4500);
 
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="topbar">
+    <header className="topbar">
       <div className="topbar-left">
         <div className="profile-section">
-          <img src={profileImg} alt="" className="profile-img" />
-
+          <img src={profileImg} alt="User profile" className="profile-img" />
           <div>
-            <h2>{greeting}, Rain</h2>
-            <p>Stay focused and productive today</p>
+            <h2>{greeting}, {userName}</h2>
+            <p>Time Cascades Command Center</p>
           </div>
+        </div>
+
+        {/* MODULE SWITCHER PILLS */}
+        <div className="main-module-switch" aria-label="Main Navigation Modules">
+          <button
+            className={`module-btn ${activeModule === "productivity" ? "active" : ""}`}
+            onClick={() => onModuleChange?.("productivity")}
+            type="button"
+          >
+            🚀 Productivity
+          </button>
+          <button
+            className={`module-btn ${activeModule === "english" ? "active" : ""}`}
+            onClick={() => onModuleChange?.("english")}
+            type="button"
+          >
+            🇬🇧 English Mastery
+          </button>
+        </div>
+      </div>
+
+      <div className="topbar-center">
+        <div className="quote-card" key={currentCard}>
+          <img src={cards[currentCard].img} alt="Card visual" className="quote-bg" />
+          <div className="overlay"></div>
+
+          {cards[currentCard].logo && (
+            <img src={cards[currentCard].logo} alt="Brand logo" className="card-logo" />
+          )}
+
+          <p>{cards[currentCard].text}</p>
         </div>
       </div>
 
@@ -83,39 +127,23 @@ const TopBar = ({ visualMode = "sunny-day", onVisualModeChange }) => {
               key={mode.id}
               className={visualMode === mode.id ? "active" : ""}
               onClick={() => onVisualModeChange?.(mode.id)}
-              title={mode.label}
+              title={`Switch to ${mode.label} theme`}
               type="button"
             >
               <span>{mode.mark}</span>
-              {mode.label}
             </button>
           ))}
         </div>
 
-        <div className="top-icons" aria-hidden="true">
-          <img className="top-img" src={sparrow} alt="" />
-          <img className="top-img" src={bat} alt="" />
-          <img className="top-img" src={ham} alt="" />
-          <img className="top-img" src={iron} alt="" />
-          <img className="top-img" src={hulk} alt="" />
-          <img className="top-img" src={spyder} alt="" />
+        <div className="top-icons" title="Productivity Badges">
+          {heroes.map((hero, idx) => (
+            <div key={idx} className="badge-wrapper" title={hero.name}>
+              <img className="top-img" src={hero.src} alt={hero.name} />
+            </div>
+          ))}
         </div>
       </div>
-
-      <div className="topbar-center">
-        <div className="quote-card">
-          <img src={cards[currentCard].img} alt="" />
-
-          <div className="overlay"></div>
-
-          {cards[currentCard].logo && (
-            <img src={cards[currentCard].logo} alt="" className="card-logo" />
-          )}
-
-          <p>{cards[currentCard].text}</p>
-        </div>
-      </div>
-    </div>
+    </header>
   );
 };
 

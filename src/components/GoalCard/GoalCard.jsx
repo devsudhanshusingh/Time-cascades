@@ -1,7 +1,5 @@
-// GoalCard.jsx
-
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../api";
 import "./GoalCard.css";
 
 const GoalCard = () => {
@@ -29,69 +27,65 @@ const GoalCard = () => {
     }
 
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
     return `${days}d ${hours}h ${minutes}m ${seconds}s`;
   };
 
-  const fetchGoals = async () => {
-    try {
-      const res = await axios.get(
-        "https://my-server-1-nvrv.onrender.com/api/goals",
-      );
-
-      const list = Array.isArray(res.data)
-        ? res.data.map((g) => ({ ...g, id: g._id || g.id }))
-        : [];
-
-      setGoals(list);
-    } catch (error) {
-      console.error("Failed to fetch goals:", error);
-    }
-  };
-
   useEffect(() => {
-    const timer = setTimeout(fetchGoals, 0);
-    return () => clearTimeout(timer);
+    let active = true;
+    api
+      .get("/api/goals")
+      .then((res) => {
+        if (active && Array.isArray(res.data)) {
+          setGoals(res.data.map((g) => ({ ...g, id: g._id || g.id })));
+        }
+      })
+      .catch((error) => {
+        console.log("Using local goals state", error);
+      });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   const addGoal = async () => {
     if (!goal.trim()) return;
 
+    const newGoalItem = {
+      id: Date.now().toString(),
+      text: goal.trim(),
+      date: date || null,
+    };
+
+    setGoals((prev) => [newGoalItem, ...prev]);
+    setGoal("");
+    setDate("");
+
     try {
-      const payload = { text: goal.trim(), date: date || null };
-
-      const res = await axios.post(
-        "https://my-server-1-nvrv.onrender.com/api/goals",
-        payload,
-      );
-
-      const created = { ...res.data, id: res.data._id || res.data.id };
-
-      setGoals((prev) => [created, ...prev]);
-
-      setGoal("");
-
-      setDate("");
+      const payload = { text: newGoalItem.text, date: newGoalItem.date };
+      const res = await api.post("/api/goals", payload);
+      if (res.data) {
+        const created = { ...res.data, id: res.data._id || res.data.id };
+        setGoals((prev) =>
+          prev.map((item) => (item.id === newGoalItem.id ? created : item))
+        );
+      }
     } catch (error) {
-      console.error("Failed to add goal:", error);
+      console.log("Add goal API failed, saved locally", error);
     }
   };
 
   const deleteGoal = async (id) => {
-    try {
-      await axios.delete(
-        `https://my-server-1-nvrv.onrender.com/api/goals/${id}`,
-      );
+    setGoals((prev) => prev.filter((item) => item.id !== id));
 
-      setGoals((prev) => prev.filter((item) => item.id !== id));
+    try {
+      await api.delete(`/api/goals/${id}`);
     } catch (error) {
-      console.error("Failed to delete goal:", error);
+      console.log("Delete goal API failed", error);
     }
   };
 
@@ -99,28 +93,25 @@ const GoalCard = () => {
     <div className={`goal-card ${showGoals ? "flipped" : ""}`}>
       <div className="goal-card-inner">
         {/* FRONT */}
-
         <div className="goal-card-face goal-card-front">
           <div className="goal-header">
             <span className="goal-icon">🎯</span>
-
             <h1>Set Your Goal</h1>
           </div>
 
           <div className="input-box">
             <span>📝</span>
-
             <input
               type="text"
-              placeholder="Become a Senior Developer"
+              placeholder="e.g. Become a Senior Developer"
               value={goal}
               onChange={(e) => setGoal(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && addGoal()}
             />
           </div>
 
           <div className="input-box">
             <span>📅</span>
-
             <input
               type="datetime-local"
               value={date}
@@ -129,48 +120,46 @@ const GoalCard = () => {
           </div>
 
           <div className="form-actions">
-            <button className="goal-btn" onClick={addGoal}>
+            <button className="goal-btn" onClick={addGoal} type="button">
               Add Goal
             </button>
 
             <button
               className="goal-btn secondary"
               onClick={() => setShowGoals(true)}
+              type="button"
             >
-              View Goals
+              View Goals ({goals.length})
             </button>
           </div>
         </div>
 
         {/* BACK */}
-
         <div className="goal-card-face goal-card-back">
           <div className="goal-back-header">
-            <span>Goals</span>
-
+            <h2>Your Goals</h2>
             <button
               className="goal-btn back"
               onClick={() => setShowGoals(false)}
+              type="button"
             >
-              Back
+              ← Back
             </button>
           </div>
 
           <div className="goal-list">
             {goals.length === 0 ? (
-              <div className="empty-state">No goals yet</div>
+              <div className="empty-state">No active goals set yet.</div>
             ) : (
               goals.map((g) => (
                 <div className="goal-item" key={g.id}>
-                  <div>
+                  <div className="goal-info">
                     <h3>{g.text}</h3>
-
                     {g.date && (
                       <>
                         <p className="goal-date">
                           Target: {new Date(g.date).toLocaleString()}
                         </p>
-
                         <p className="countdown">⏳ {getCountdown(g.date)}</p>
                       </>
                     )}
@@ -179,6 +168,8 @@ const GoalCard = () => {
                   <button
                     className="delete-btn"
                     onClick={() => deleteGoal(g.id)}
+                    title="Delete goal"
+                    type="button"
                   >
                     ✕
                   </button>

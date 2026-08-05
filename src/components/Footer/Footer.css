@@ -1,18 +1,11 @@
-/* Footer.css */
-
 .footer {
   width: 100%;
-
-  padding: 30px 20px;
-
+  padding: 28px 20px;
   text-align: center;
-
-  font-size: 1rem;
-  font-weight: 500;
-
-  color: #6b7280;
-
-  margin-top: 40px;
-
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: 48px;
+  border-top: 1px solid var(--border);
 }

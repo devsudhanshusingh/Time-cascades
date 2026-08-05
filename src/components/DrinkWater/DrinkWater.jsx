@@ -1,42 +1,36 @@
 import { useState, useEffect } from "react";
+import api from "../../api";
 import "./DrinkWater.css";
-import axios from "axios";
 
 const DrinkWater = () => {
   const smallCupSize = 250;
 
-  const [liters, setLiters] = useState("");
-  const [goalML, setGoalML] = useState(0);
+  const [liters, setLiters] = useState("2.5");
+  const [goalML, setGoalML] = useState(2500);
   const [currentLogId, setCurrentLogId] = useState(null);
 
-  const [isEditing, setIsEditing] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
   const [selectedCups, setSelectedCups] = useState([]);
 
   useEffect(() => {
     const fetchToday = async () => {
       try {
-        const res = await axios.get(
-          "https://my-server-1-nvrv.onrender.com/api/drink-water/today",
-        );
-
+        const res = await api.get("/api/drink-water/today");
         if (res.data) {
           const log = res.data;
           setCurrentLogId(log._id || log.id || null);
-          setLiters(log.goalLiters ? String(log.goalLiters) : "");
-          setGoalML(log.goalLiters ? Number(log.goalLiters) * 1000 : 0);
+          setLiters(log.goalLiters ? String(log.goalLiters) : "2.5");
+          setGoalML(log.goalLiters ? Number(log.goalLiters) * 1000 : 2500);
 
-          // if API returns cups info, set selectedCups accordingly
           if (Array.isArray(log.cups)) {
-            const cups = log.cups.map((_, idx) => idx);
-            setSelectedCups(cups);
+            setSelectedCups(log.cups.map((_, idx) => idx));
           } else if (typeof log.filledAmount === "number") {
             const count = Math.floor((log.filledAmount || 0) / smallCupSize);
             setSelectedCups(Array.from({ length: count }, (_, i) => i));
           }
         }
-      } catch {
-        // no today's log or failed
-        // console.error('Failed to fetch today log', error)
+      } catch (error) {
+        console.log("Using default water log state", error);
       }
     };
 
@@ -44,13 +38,10 @@ const DrinkWater = () => {
   }, []);
 
   const totalGoal = Number(liters || 0) * 1000;
-
   const totalCups = goalML ? Math.ceil(goalML / smallCupSize) : 0;
 
   const handleCupClick = async (idx) => {
-    // optimistic local update
     let updated = [...selectedCups];
-
     if (updated.includes(idx)) {
       updated = updated.filter((cup) => cup !== idx);
     } else {
@@ -62,46 +53,43 @@ const DrinkWater = () => {
     if (!currentLogId) return;
 
     try {
-      await axios.patch(
-        `https://my-server-1-nvrv.onrender.com/api/drink-water/${currentLogId}/toggle-cup`,
-      );
+      await api.patch(`/api/drink-water/${currentLogId}/toggle-cup`);
+    } catch (error) {
+      console.log("Toggle cup API failed, state saved locally", error);
+    }
+  };
 
-      // re-fetch today's log to sync exact state
-      const res = await axios.get(
-        "https://my-server-1-nvrv.onrender.com/api/drink-water/today",
-      );
+  const handleSubmitGoal = async () => {
+    if (isEditing) {
+      if (totalGoal > 0) {
+        setGoalML(totalGoal);
+        setIsEditing(false);
 
-      if (res.data) {
-        const log = res.data;
-        setCurrentLogId(log._id || log.id || null);
-        setLiters(log.goalLiters ? String(log.goalLiters) : "");
-        setGoalML(log.goalLiters ? Number(log.goalLiters) * 1000 : 0);
-
-        if (Array.isArray(log.cups)) {
-          const cups = log.cups.map((_, i) => i);
-          setSelectedCups(cups);
-        } else if (typeof log.filledAmount === "number") {
-          const count = Math.floor((log.filledAmount || 0) / smallCupSize);
-          setSelectedCups(Array.from({ length: count }, (_, i) => i));
+        try {
+          const res = await api.post("/api/drink-water", {
+            goalLiters: Number(liters),
+          });
+          if (res.data) {
+            setCurrentLogId(res.data._id || res.data.id || null);
+          }
+        } catch (error) {
+          console.log("Create water log failed, running offline", error);
         }
       }
-    } catch (error) {
-      console.error("Failed to toggle cup:", error);
+    } else {
+      setIsEditing(true);
     }
   };
 
   const filledAmount = selectedCups.length * smallCupSize;
-
-  const remained = ((goalML - filledAmount) / 1000).toFixed(2);
-
-  const percentage = goalML ? ((filledAmount / goalML) * 100).toFixed(1) : 0;
+  const remainedVal = Math.max(0, goalML - filledAmount);
+  const remained = (remainedVal / 1000).toFixed(2);
+  const percentage = goalML ? Math.min(100, Math.round((filledAmount / goalML) * 100)) : 0;
 
   return (
     <div className="drinkwater-container">
       <div className="drinkwater-card">
-        <h1>💧 Drink Water</h1>
-
-        {/* Goal Input */}
+        <h1 className="title">💧 Drink Water</h1>
 
         <div className="glass-input">
           <input
@@ -113,45 +101,14 @@ const DrinkWater = () => {
             onChange={(e) => setLiters(e.target.value)}
           />
 
-          <button
-            onClick={async () => {
-              if (isEditing) {
-                if (totalGoal > 0) {
-                  try {
-                    const payload = { goalLiters: Number(liters) };
-
-                    const res = await axios.post(
-                      "https://my-server-1-nvrv.onrender.com/api/drink-water",
-                      payload,
-                    );
-
-                    const created = res.data;
-                    setCurrentLogId(created._id || created.id || null);
-                    setGoalML(
-                      created.goalLiters
-                        ? Number(created.goalLiters) * 1000
-                        : totalGoal,
-                    );
-                    setSelectedCups([]);
-                    setIsEditing(false);
-                  } catch (error) {
-                    console.error("Failed to create drink-water log:", error);
-                  }
-                }
-              } else {
-                setIsEditing(true);
-              }
-            }}
-          >
-            {isEditing ? "Submit" : "Edit"}
+          <button onClick={handleSubmitGoal} type="button">
+            {isEditing ? "Save Goal" : "Edit Goal"}
           </button>
         </div>
 
-        <h3>Goal: {liters || 0} L</h3>
+        <h3 className="goal-subtitle">Daily Goal: <span>{liters || 0} L</span></h3>
 
-        {/* Big Glass */}
-
-        <div className="cup">
+        <div className="cup" aria-label="Hydration progress visualizer">
           {percentage < 100 && (
             <div
               className="remained"
@@ -160,7 +117,6 @@ const DrinkWater = () => {
               }}
             >
               <span>{remained}L</span>
-
               <small>Remained</small>
             </div>
           )}
@@ -177,20 +133,15 @@ const DrinkWater = () => {
           )}
         </div>
 
-        <p className="text">Select your 250ml glasses</p>
-
-        {/* Small Glasses */}
+        <p className="text">Tap 250ml glasses to log hydration</p>
 
         <div className="cups">
-          {Array.from({
-            length: totalCups,
-          }).map((_, idx) => (
+          {Array.from({ length: totalCups }).map((_, idx) => (
             <div
               key={idx}
-              className={`cup-small ${
-                selectedCups.includes(idx) ? "full" : ""
-              }`}
+              className={`cup-small ${selectedCups.includes(idx) ? "full" : ""}`}
               onClick={() => handleCupClick(idx)}
+              title={`250ml glass ${idx + 1}`}
             >
               250ml
             </div>

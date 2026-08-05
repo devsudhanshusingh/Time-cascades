@@ -1,0 +1,413 @@
+.vocab-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* DAILY WORD CARD */
+
+.vocab-daily-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px 32px;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(59, 130, 246, 0.15), transparent 28rem),
+    var(--panel-bg);
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 45px var(--shadow);
+  backdrop-filter: blur(20px);
+}
+
+.vocab-badge-kicker {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.vocab-daily-info h2 {
+  margin: 6px 0 0 0;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.vocab-daily-info small {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-left: 8px;
+}
+
+.vocab-daily-meaning {
+  margin-top: 8px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.vocab-daily-example {
+  margin-top: 4px;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.vocab-daily-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* CONTROLS CARD */
+
+.vocab-controls-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 24px;
+  border-radius: 20px;
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  box-shadow: 0 12px 30px var(--shadow);
+}
+
+.vocab-search-box {
+  flex: 1;
+  max-width: 400px;
+}
+
+.vocab-search-box input {
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--panel-strong);
+  color: var(--text-main);
+  outline: none;
+  font-size: 0.9rem;
+}
+
+.vocab-search-box input:focus {
+  border-color: var(--accent-2);
+}
+
+.vocab-filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.vocab-filters select {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--panel-strong);
+  color: var(--text-main);
+  outline: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+/* TABLE CARD */
+
+.vocab-table-card {
+  border-radius: 24px;
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 45px var(--shadow);
+  overflow: hidden;
+}
+
+.vocab-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.vocab-table th {
+  padding: 16px 20px;
+  background: var(--panel-soft);
+  color: var(--text-muted);
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--border);
+}
+
+.vocab-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+  color: var(--text-main);
+}
+
+.vocab-table tr.row-learned {
+  background: rgba(16, 185, 129, 0.03);
+}
+
+.word-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fav-star-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+}
+
+.fav-star-btn.active {
+  color: #f59e0b;
+}
+
+.speaker-btn {
+  background: var(--panel-soft);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.phonetic {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.meaning-cell .meaning {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.meaning-cell .example {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: 2px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.badge.category {
+  background: var(--accent-soft);
+  color: var(--accent-2);
+}
+
+.badge.diff.beginner {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.badge.diff.intermediate {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+}
+
+.badge.diff.advanced {
+  background: rgba(236, 72, 153, 0.15);
+  color: #ec4899;
+}
+
+.status-btn {
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+}
+
+.status-btn.learned {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.status-btn.pending {
+  background: var(--panel-soft);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.rev-date {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.action-btns {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tbl-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--panel-strong);
+  color: var(--text-main);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.tbl-btn.danger:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.vocab-empty {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* PAGINATION */
+
+.vocab-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--panel-soft);
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.page-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.page-btns button {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--panel-strong);
+  color: var(--text-main);
+  font-weight: 700;
+  font-size: 0.82rem;
+}
+
+.page-btns button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* MODAL */
+
+.em-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.em-modal-card {
+  width: 100%;
+  max-width: 600px;
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 25px 60px var(--shadow);
+}
+
+.em-modal-card h3 {
+  margin: 0 0 20px 0;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.em-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.em-modal-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.em-modal-form input,
+.em-modal-form textarea,
+.em-modal-form select {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--panel-bg);
+  color: var(--text-main);
+  outline: none;
+  font-size: 0.9rem;
+}
+
+.em-modal-form textarea {
+  min-height: 70px;
+  resize: vertical;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+@media (max-width: 900px) {
+  .vocab-daily-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .vocab-controls-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .vocab-filters {
+    flex-wrap: wrap;
+  }
+}

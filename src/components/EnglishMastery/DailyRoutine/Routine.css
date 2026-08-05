@@ -1,0 +1,261 @@
+.routine-container {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 28px;
+}
+
+/* TIMER CARD */
+
+.routine-timer-card {
+  padding: 32px;
+  border-radius: 24px;
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 45px var(--shadow);
+  backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-content: space-between;
+}
+
+.routine-kicker {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--accent-2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.routine-timer-header h2 {
+  margin: 6px 0 0 0;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.routine-timer-header p {
+  margin-top: 6px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* CIRCULAR PROGRESS */
+
+.routine-circle-wrap {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  margin: 24px 0;
+  display: grid;
+  place-items: center;
+}
+
+.routine-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.circle-bg {
+  fill: none;
+  stroke: var(--panel-soft);
+  stroke-width: 12;
+}
+
+.circle-progress {
+  fill: none;
+  stroke: var(--accent-2);
+  stroke-width: 12;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+.circle-center-text {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timer-digits {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1;
+}
+
+.task-step-lbl {
+  margin-top: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.routine-timer-btns {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.routine-timer-btns button {
+  flex: 1;
+}
+
+/* CHECKLIST CARD */
+
+.routine-checklist-card {
+  padding: 32px;
+  border-radius: 24px;
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 45px var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.checklist-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.checklist-top-bar h3 {
+  margin: 0;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.checklist-top-bar p {
+  margin-top: 2px;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.overall-percent-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 14px;
+  background: var(--accent-soft);
+  color: var(--accent-2);
+}
+
+.overall-percent-badge span {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.overall-percent-badge small {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.routine-task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.routine-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: 18px;
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.routine-item:hover,
+.routine-item.selected {
+  border-color: var(--accent-2);
+  box-shadow: 0 4px 14px var(--accent-soft);
+}
+
+.routine-item.done {
+  opacity: 0.75;
+}
+
+.task-checkbox {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 2px solid var(--accent-2);
+  background: transparent;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.task-checkbox.checked {
+  background: var(--accent-2);
+}
+
+.item-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+}
+
+.item-icon {
+  font-size: 1.5rem;
+}
+
+.item-info h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.item-info p {
+  margin-top: 2px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.item-duration-badge {
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: var(--panel-soft);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.routine-congrats-banner {
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  font-weight: 800;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 900px) {
+  .routine-container {
+    grid-template-columns: 1fr;
+  }
+}

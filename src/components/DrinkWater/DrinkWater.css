@@ -1,242 +1,212 @@
-@import url("https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap");
-
-:root {
-  --border-color: #144fc6;
-  --fill-color: #6ab3f8;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 .drinkwater-container {
   width: 100%;
+  height: 100%;
   display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .drinkwater-card {
   width: 100%;
-  max-width: 600px;
-  height: 580px;
-
-  background: #88E7FF;
-  border-radius: 22px;
-
-  padding: 35px;
-
+  height: 100%;
+  min-height: 520px;
+  border-radius: 24px;
+  padding: 36px 28px;
   text-align: center;
-
   display: flex;
   flex-direction: column;
-
-  box-shadow: 0 5px 20px rgba(0,0,0,.08);
+  justify-content: space-between;
+  border: 1px solid var(--border);
+  background: var(--panel-bg);
+  box-shadow: 0 20px 45px var(--shadow);
 }
 
-h1 {
-  font-size: 2rem;
+.drinkwater-card .title {
+  font-family: "Plus Jakarta Sans", var(--heading);
+  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  font-weight: 800;
+  color: var(--text-main);
 }
 
-h3 {
-  margin-top: 15px;
-  font-weight: 500;
-  color: #555;
+.goal-subtitle {
+  margin-top: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
-/* Input */
+.goal-subtitle span {
+  color: #0284c7;
+  font-weight: 800;
+}
+
+/* INPUT */
 
 .glass-input {
-  margin-top: 25px;
-
+  margin-top: 16px;
   display: flex;
   justify-content: center;
-  gap: 15px;
+  gap: 12px;
 }
 
 .glass-input input {
-  width: 250px;
-
-  padding: 12px;
-
-  border: none;
-  border-radius: 10px;
-
+  width: min(240px, 60vw);
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel-strong);
+  color: var(--text-main);
   outline: none;
+  font-size: 0.95rem;
+}
 
-  font-size: 1rem;
+.glass-input input:focus {
+  border-color: #0284c7;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
 }
 
 .glass-input input:disabled {
-  background: #d1d5db;
+  opacity: 0.6;
 }
 
 .glass-input button {
-  padding: 12px 22px;
-
+  padding: 10px 20px;
   border: none;
-  border-radius: 10px;
-
-  background: #87b6cc;
-  color: white;
-
-  font-size: 1rem;
-
+  border-radius: 12px;
+  background: #0284c7;
+  color: #ffffff;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
   cursor: pointer;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .glass-input button:hover {
-  opacity: .9;
+  transform: translateY(-1px);
+  opacity: 0.95;
 }
 
-/* Big Water Glass */
+/* BIG GLASS VISUALIZER - WATER BLUE */
 
 .cup {
-  background: white;
-
-  border: 4px solid var(--border-color);
-
-  border-radius: 0 0 40px 40px;
-
-  width: 150px;
-  height: 280px;
-
-  margin: 25px auto;
-
+  background: var(--panel-strong);
+  border: 3.5px solid #0284c7;
+  border-radius: 0 0 36px 36px;
+  width: 135px;
+  height: 210px;
+  margin: 16px auto;
   overflow: hidden;
-
   display: flex;
   flex-direction: column;
+  position: relative;
+  box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .remained {
   flex: 1;
-
   display: flex;
   flex-direction: column;
-
   justify-content: center;
   align-items: center;
-
-  transition: .3s;
+  transition: height 0.3s ease;
+  color: var(--text-muted);
 }
 
 .remained span {
-  font-size: 1.8rem;
-  font-weight: bold;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-main);
 }
 
 .remained small {
-  font-size: .9rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .percentage {
-  background: var(--fill-color);
-
+  background: linear-gradient(180deg, #38bdf8, #0284c7);
   display: flex;
   justify-content: center;
   align-items: center;
-
-  font-size: 1.4rem;
-  font-weight: bold;
-
-  transition: .3s;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #ffffff;
+  transition: height 0.3s ease;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 }
 
-.text {
-  margin-bottom: 10px;
-  font-size: 1rem;
+.drinkwater-card .text {
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
-/* Bottom fixed area */
+/* SMALL GLASSES GRID - WATER BLUE */
 
 .cups {
-  margin-top: auto;
-
-  height: 20%;
-
+  margin-top: 8px;
+  min-height: 95px;
   display: flex;
   flex-wrap: wrap;
-
   justify-content: center;
   align-content: flex-start;
-
-  gap: 6px;
-
-  overflow-y: auto;
-  overflow-x: hidden;
-
+  gap: 8px;
   padding: 10px;
+  max-height: 140px;
+  overflow-y: auto;
+  border-radius: 16px;
+  background: var(--panel-soft);
+  border: 1px solid var(--border);
 }
 
-/* Small glasses */
-
 .cup-small {
-  width: 45px;
-  height: 70px;
-
-  background: rgba(255,255,255,.95);
-
-  border: 3px solid var(--border-color);
-
+  width: 42px;
+  height: 58px;
+  background: var(--panel-strong);
+  border: 2px solid #0284c7;
   border-radius: 0 0 10px 10px;
-
   display: flex;
   justify-content: center;
   align-items: center;
-
   cursor: pointer;
-
-  font-size: .65rem;
-  font-weight: 600;
-
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #0284c7;
   flex-shrink: 0;
-
-  transition: .3s;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 
 .cup-small:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  border-color: #38bdf8;
 }
 
 .cup-small.full {
-  background: var(--fill-color);
-  color: white;
+  background: linear-gradient(180deg, #38bdf8, #0284c7);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);
 }
 
-/* Scrollbar */
-
-.cups::-webkit-scrollbar {
-  width: 6px;
-}
-
-.cups::-webkit-scrollbar-thumb {
-  background: #b5b5b5;
-  border-radius: 10px;
-}
-
-/* Responsive */
-
-@media (max-width:768px) {
-
+@media (max-width: 640px) {
   .drinkwater-card {
-    height: auto;
-    padding: 25px;
+    padding: 24px 16px;
+    min-height: auto;
   }
 
   .glass-input {
     flex-direction: column;
+    align-items: center;
   }
 
-  .glass-input input,
-  .glass-input button {
+  .glass-input input {
     width: 100%;
   }
 
-  .cups {
-    height: 120px;
+  .glass-input button {
+    width: 100%;
   }
-
 }
